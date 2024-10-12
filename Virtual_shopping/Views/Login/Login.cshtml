@@ -10,7 +10,8 @@
 <body>
     <div class="container" id="container">
         <div class="form-container sign-up-container">
-            <form action="#" method="post">
+            <form action="/Login/SignUp" method="post">
+                <!-- Corrected action URL -->
                 <h1>Create Account</h1>
                 <div class="social-container">
                     <a href="~/Error/Error404" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -18,14 +19,15 @@
                     <a href="~/Error/Error404" class="social"><i class="fab fa-linkedin-in"></i></a>
                 </div>
                 <span>or use your email for registration</span>
-                <input type="text" name="Name" placeholder="Name" required />
-                <input type="email" name="Email" placeholder="Email" required />
-                <input type="password" name="Password" placeholder="Password" required />
+                <input type="text" name="CustomerName" placeholder="Name" required />
+                <input type="email" name="CustomerEmail" placeholder="Email" required />
+                <input type="password" name="CustomerPassword" placeholder="Password" required />
                 <button type="submit">Sign Up</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
-            <form action="/Login/SıgnIn" method="post">
+            <form action="/Login/SignIn" method="post">
+                <!-- Corrected action URL -->
                 <h1>Sign in</h1>
                 <div class="social-container">
                     <a href="~/Error/Error404" class="social"><i class="fab fa-facebook-f"></i></a>

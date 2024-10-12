@@ -17,26 +17,41 @@ namespace Virtual_Shopping.Controllers
         }
 
         [HttpGet]
-        public IActionResult SıgnIn()
+        public IActionResult SignUp()
         {
             return View();
         }
+
         [HttpPost]
-        public async Task<IActionResult> SıgnIn(Customer x)
+        public async Task<IActionResult> SignUp(Customer d)
         {
-            var information = await c.Customers.FirstOrDefaultAsync(c => c.CustomerEmail == x.CustomerEmail && c.CustomerPassword == x.CustomerPassword);
+            c.Customers.Add(d);
+            await c.SaveChangesAsync(); 
+
+            return RedirectToAction("Login", "Login");
+        }
+
+        [HttpGet]
+        public IActionResult SignIn()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SignIn(Customer x)
+        {
+            var information = await c.Customers
+                .FirstOrDefaultAsync(c => c.CustomerEmail == x.CustomerEmail && c.CustomerPassword == x.CustomerPassword);
 
             if (information != null)
             {
-                await SignInUser(information.CustomerID.ToString(), information.CustomerEmail, "SıgnIn");
-                return RedirectToAction("Error404", "Error");
+                await SignInUser(information.CustomerID.ToString(), information.CustomerEmail, "SignIn");
+                return RedirectToAction("Error404", "Error"); 
             }
 
-            // Giriş başarısızsa sayfayı yenile
             return RedirectToAction("Login");
         }
 
-        // Kullanıcıyı oturum açma işlemi
         private async Task SignInUser(string userId, string email, string role)
         {
             var claims = new List<Claim>
@@ -49,7 +64,7 @@ namespace Virtual_Shopping.Controllers
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
             {
-                IsPersistent = true // Oturumu kalıcı yapmak için
+                IsPersistent = true // Make the session persistent
             };
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
