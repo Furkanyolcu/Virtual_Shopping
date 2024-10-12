@@ -1,17 +1,35 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using Virtual_Shopping.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
+// Cookie Authentication'ý ekle
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login/Login"; // Varsayýlan olarak öðrenci login yolu
+        options.AccessDeniedPath = "/Login/Login"; // Yetkisiz eriþim için yönlendirme
+    });
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// Authorization ayarlarý
+builder.Services.AddAuthorization(options =>
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+    options.AddPolicy("CustomerOnly", policy => policy.RequireClaim("UserType", "Customer"));
+    options.AddPolicy("SellerOnly", policy => policy.RequireClaim("UserType", "Seller"));
+});
+
+
+
+var app = builder.Build();
+ 
+//if (!app.Environment.IsDevelopment())
+//{
+//    app.UseExceptionHandler("/Home/Error");
+//    app.UseHsts();
+//}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
