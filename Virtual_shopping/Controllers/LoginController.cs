@@ -45,7 +45,7 @@ namespace Virtual_Shopping.Controllers
 
 			if (information != null)
 			{
-				await SignInUser(information.CustomerID.ToString(), information.CustomerEmail/*, "SignIn"*/);
+				await SignInUser(information.CustomerID.ToString(), information.CustomerEmail, "Customer");
 				return RedirectToAction("Products", "Home");
 			}
 
@@ -66,20 +66,20 @@ namespace Virtual_Shopping.Controllers
 
 			if (information != null)
 			{
-				await SignInUser(information.AdminID.ToString(), information.AdminEmail/*, "Admin"*/);
+				await SignInUser(information.AdminID.ToString(), information.AdminEmail, "Admin");
 				return RedirectToAction("Panel", "Admin");
 			}
 
 			return RedirectToAction("Panel","Admin");
 		}
 
-		private async Task SignInUser(string userId, string email/*, string role*/)
+		private async Task SignInUser(string userId, string email, string role)
 		{
 			var claims = new List<Claim>
 			{
 				new Claim(ClaimTypes.NameIdentifier, userId),
 				new Claim(ClaimTypes.Email, email),
-				//new Claim(ClaimTypes.Role, role)
+				new Claim("UserType", role)
 			};
 
 			var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

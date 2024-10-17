@@ -15,12 +15,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 // Authorization ayarlarý
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy("CustomerOnly", policy => policy.RequireClaim("UserType", "Customer"));
-//    options.AddPolicy("SellerOnly", policy => policy.RequireClaim("UserType", "Seller"));
-//	options.AddPolicy("AdminOnly", policy => policy.RequireClaim("UserType", "Admin"));
-//});
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CustomerOnly", policy => policy.RequireClaim("UserType", "Customer"));
+    options.AddPolicy("SellerOnly", policy => policy.RequireClaim("UserType", "Seller"));
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("UserType", "Admin"));
+});
 
 
 
@@ -41,6 +41,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Login}/{id?}");
+    pattern: "{controller=Login}/{action=Admin}/{id?}");
 
 app.Run();

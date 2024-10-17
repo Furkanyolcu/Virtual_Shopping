@@ -9,14 +9,15 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Virtual_Shopping.Controllers
 {
-	[Authorize]
+	[Authorize(Policy = "AdminOnly")]
 	public class AdminController : Controller
 	{
 		Context _context = new Context();
 
 		public IActionResult Panel()
 		{
-			return View();
+			//var admin = _context.Admins.FirstOrDefault();	
+			return View(/*admin*/);
 		}
 
 		/* PROFİL İŞLEMLERİ */
@@ -48,22 +49,29 @@ namespace Virtual_Shopping.Controllers
 					SellerEmail = model.SellerEmail,
 					SellerPassword = model.SellerPassword
 				};
+
+				_context.Sellers.Add(newSeller);
+				await _context.SaveChangesAsync();
+
+				return RedirectToAction("Seller");
+
+
 			}
 
 			return View(model);
 		}
 
-        [HttpPost]
-        public IActionResult SearchSeller(string searchTerm)
-        {
-            var sellers = _context.Sellers
-                .Where(s => s.SellerName.Contains(searchTerm))
-                .ToList();
-            return View("Sellers", sellers);
-        }
+		[HttpPost]
+		public IActionResult SearchSeller(string searchTerm)
+		{
+			var sellers = _context.Sellers
+				.Where(s => s.SellerName.Contains(searchTerm))
+				.ToList();
+			return View("Sellers", sellers);
+		}
 
 
-        public async Task<IActionResult> Logout()
+		public async Task<IActionResult> Logout()
 		{
 			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 			return RedirectToAction("Login", "Login");

@@ -1,10 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@* @model Virtual_Shopping.Models.Admin *@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Academician Panel</title>
+	<title>Admin Panel</title>
 	<!-- plugins:css -->
 	<link rel="stylesheet" href="~/AdminTheme/assets/vendors/mdi/css/materialdesignicons.min.css">
 	<link rel="stylesheet" href="~/AdminTheme/assets/vendors/css/vendor.bundle.base.css">
@@ -65,51 +66,33 @@
 				<ul class="nav">
 					<li class="nav-item nav-profile">
 						<a href="#" class="nav-link">
-							<div class="nav-profile-image">
-								<img src="~/AdminTheme/assets/images/faces/face1.jpg" alt="profile">
-								<span class="login-status online"></span>
-								<!--change to offline or busy as needed-->
-							</div>
 							<div class="nav-profile-text d-flex flex-column">
-								<span class="font-weight-bold mb-2">Nuh Alpaslan</span>
-								<span class="text-secondary text-small">Bilgisayar Mühendisliği</span>
-								<span class="text-secondary text-small">Bölüm başkanı</span>
+								<span class="font-weight-bold mb-2">Admin</span>
+								<span class="text-secondary text-small">Sytem Adminastator</span>
 							</div>
 							<i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/Academician/Panel">
+						<a class="nav-link" href="/Admin/Panel">
 							<span class="menu-title">Ana menü</span>
 							<i class="mdi mdi-home menu-icon"></i>
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/Academician/Students">
-							<span class="menu-title">Öğrenci ayarları</span>
+						<a class="nav-link" href="/Admin/Sellers">
+							<span class="menu-title">Satıcı Detayları</span>
 							<i class="mdi mdi-human menu-icon"></i>
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/Academician/Syllabus">
-							<span class="menu-title">Ders Programı</span>
-							<i class="mdi mdi-book-open-page-variant menu-icon"></i>
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/Academician/Lessons">
-							<span class="menu-title">Dersler</span>
-							<i class="mdi mdi-book-multiple menu-icon"></i>
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/Academician/Objections">
+						<a class="nav-link" href="/Admin/Objections">
 							<span class="menu-title">İtirazlar</span>
 							<i class="mdi mdi-comment-question-outline menu-icon"></i>
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/Academician/Profile">
+						<a class="nav-link" href="/Admin/Profile">
 							<span class="menu-title">Profil Ayarları</span>
 							<i class="mdi mdi-account-settings menu-icon"></i>
 						</a>
