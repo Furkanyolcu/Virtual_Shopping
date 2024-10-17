@@ -69,5 +69,45 @@ namespace Virtual_Shopping.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
         }
-    }
+
+
+		[HttpGet]
+		public IActionResult Admin()
+		{
+			return View();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Admin(Admin x)
+		{
+			var information = await c.Admins
+				.FirstOrDefaultAsync(c => c.AdminEmail == x.AdminEmail && c.AdminPassword == x.AdminPassword);
+
+			if (information != null)
+			{
+				await SignInAdmin(information.AdminID.ToString(), information.AdminEmail, "Admin");
+				return RedirectToAction("Panel", "Admin");
+			}
+
+			return RedirectToAction("Login");
+		}
+
+		private async Task SignInAdmin(string userId, string email, string role)
+		{
+			var claims = new List<Claim>
+			{
+				new Claim(ClaimTypes.NameIdentifier, userId),
+				new Claim(ClaimTypes.Email, email),
+				new Claim(ClaimTypes.Role, role)
+			};
+
+			var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+			var authProperties = new AuthenticationProperties
+			{
+				IsPersistent = true // Make the session persistent
+			};
+
+			await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+		}
+	}
 }

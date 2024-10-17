@@ -9,6 +9,6 @@ namespace Virtual_Shopping.Models
 		public string AdminName { get; set; }
 		public string AdminEmail { get; set; }
 		public string AdminPassword { get; set; }
-		public string Role { get; set; }
+		public string Role = "Admin";
 	}
 }

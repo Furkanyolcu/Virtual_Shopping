@@ -10,5 +10,7 @@ namespace Virtual_Shopping.Models
 		public string ProductDescription { get; set; }
 		public float ProductPrice { get; set; }
 		public int ProductCategoryID { get; set; }
+		public List<Seller> Sellers { get; set; }
+
 	}
 }

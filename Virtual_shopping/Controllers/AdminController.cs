@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Virtual_Shopping.Models;
+using System.ComponentModel;
 
 namespace Virtual_Shopping.Controllers
 {
@@ -16,57 +17,56 @@ namespace Virtual_Shopping.Controllers
 			_context = context;
 		}
 
-		public IActionResult Login()
-		{
-			return View();
-		}
-
-		[HttpGet]
-		public IActionResult SignIn()
-		{
-			return View();
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> SignIn(Admin x)
-		{
-			var information = await _context.Admins
-				.FirstOrDefaultAsync(c => c.AdminEmail == x.AdminEmail && c.AdminPassword == x.AdminPassword);
-
-			if (information != null)
-			{
-				await SignInUser(information.AdminID.ToString(), information.AdminEmail, information.Role);
-				return RedirectToAction("Panel", "Admin");
-			}
-
-			return RedirectToAction("Login");
-		}
-
-		private async Task SignInUser(string userId, string email, string role)
-		{
-			var claims = new List<Claim>
-			{
-				new Claim(ClaimTypes.NameIdentifier, userId),
-				new Claim(ClaimTypes.Email, email),
-				new Claim(ClaimTypes.Role, role)
-			};
-
-			var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-			var authProperties = new AuthenticationProperties
-			{
-				IsPersistent = true // Make the session persistent
-			};
-
-			await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-		}
-
-
 		public IActionResult Panel()
 		{
 			return View();
 		}
 
-		public async Task<IActionResult> Logout()
+		/* PROFİL İŞLEMLERİ */
+		public IActionResult Profile()
+		{
+			return View();
+		}
+
+		/* ÖĞRENCİ İŞLEMLERİ */
+		[HttpGet]
+		public IActionResult Sellers()
+		{
+			var seller = _context.Sellers.ToList();
+			return View(seller);
+		}
+		[HttpGet]
+		public IActionResult AddSeller()
+		{
+			return View();
+		}
+		[HttpPost]
+		public async Task<IActionResult> AddSeller(AddSellerView model)
+		{
+			if (ModelState.IsValid)
+			{
+				var newSeller = new Seller
+				{
+					SellerName = model.SellerName,
+					SellerEmail = model.SellerEmail,
+					SellerPassword = model.SellerPassword
+				};
+			}
+
+			return View(model);
+		}
+
+        [HttpPost]
+        public IActionResult SearchSeller(string searchTerm)
+        {
+            var sellers = _context.Sellers
+                .Where(s => s.SellerName.Contains(searchTerm))
+                .ToList();
+            return View("Sellers", sellers);
+        }
+
+
+        public async Task<IActionResult> Logout()
 		{
 			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 			return RedirectToAction("Home", "Login");

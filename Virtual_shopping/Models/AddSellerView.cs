@@ -2,13 +2,11 @@
 
 namespace Virtual_Shopping.Models
 {
-	public class Seller
+	public class AddSellerView
 	{
-		[Key]
 		public int SellerID { get; set; }
 		public string SellerName { get; set; }
 		public string SellerEmail { get; set; }
 		public string SellerPassword { get; set; }
-		public List<Products> SellerProducts { get; set; }
 	}
 }
