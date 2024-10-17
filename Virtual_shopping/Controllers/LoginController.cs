@@ -7,69 +7,50 @@ using Virtual_Shopping.Models;
 
 namespace Virtual_Shopping.Controllers
 {
-    public class LoginController : Controller
-    {
-        Context c = new Context();
+	public class LoginController : Controller
+	{
+		Context c = new Context();
 
-        public IActionResult Login()
-        {
-            return View();
-        }
+		public IActionResult Login()
+		{
+			return View();
+		}
 
-        [HttpGet]
-        public IActionResult SignUp()
-        {
-            return View();
-        }
+		[HttpGet]
+		public IActionResult SignUp()
+		{
+			return View();
+		}
 
-        [HttpPost]
-        public async Task<IActionResult> SignUp(Customer d)
-        {
-            c.Customers.Add(d);
-            await c.SaveChangesAsync(); 
+		[HttpPost]
+		public async Task<IActionResult> SignUp(Customer d)
+		{
+			c.Customers.Add(d);
+			await c.SaveChangesAsync();
 
-            return RedirectToAction("Login", "Login");
-        }
+			return RedirectToAction("Login", "Login");
+		}
 
-        [HttpGet]
-        public IActionResult SignIn()
-        {
-            return View();
-        }
+		[HttpGet]
+		public IActionResult SignIn()
+		{
+			return View();
+		}
 
-        [HttpPost]
-        public async Task<IActionResult> SignIn(Customer x)
-        {
-            var information = await c.Customers
-                .FirstOrDefaultAsync(c => c.CustomerEmail == x.CustomerEmail && c.CustomerPassword == x.CustomerPassword);
+		[HttpPost]
+		public async Task<IActionResult> SignIn(Customer x)
+		{
+			var information = await c.Customers
+				.FirstOrDefaultAsync(c => c.CustomerEmail == x.CustomerEmail && c.CustomerPassword == x.CustomerPassword);
 
-            if (information != null)
-            {
-                await SignInUser(information.CustomerID.ToString(), information.CustomerEmail, "SignIn");
-                return RedirectToAction("Error404", "Error"); 
-            }
+			if (information != null)
+			{
+				await SignInUser(information.CustomerID.ToString(), information.CustomerEmail/*, "SignIn"*/);
+				return RedirectToAction("Error404", "Error");
+			}
 
-            return RedirectToAction("Login");
-        }
-
-        private async Task SignInUser(string userId, string email, string role)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, userId),
-                new Claim(ClaimTypes.Email, email),
-                new Claim(ClaimTypes.Role, role)
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = true // Make the session persistent
-            };
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-        }
-
+			return RedirectToAction("Login");
+		}
 
 		[HttpGet]
 		public IActionResult Admin()
@@ -85,20 +66,20 @@ namespace Virtual_Shopping.Controllers
 
 			if (information != null)
 			{
-				await SignInAdmin(information.AdminID.ToString(), information.AdminEmail, "Admin");
+				await SignInUser(information.AdminID.ToString(), information.AdminEmail/*, "Admin"*/);
 				return RedirectToAction("Panel", "Admin");
 			}
 
-			return RedirectToAction("Login");
+			return RedirectToAction("Panel","Admin");
 		}
 
-		private async Task SignInAdmin(string userId, string email, string role)
+		private async Task SignInUser(string userId, string email/*, string role*/)
 		{
 			var claims = new List<Claim>
 			{
 				new Claim(ClaimTypes.NameIdentifier, userId),
 				new Claim(ClaimTypes.Email, email),
-				new Claim(ClaimTypes.Role, role)
+				//new Claim(ClaimTypes.Role, role)
 			};
 
 			var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -109,5 +90,6 @@ namespace Virtual_Shopping.Controllers
 
 			await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 		}
+
 	}
 }

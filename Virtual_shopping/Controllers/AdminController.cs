@@ -5,17 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Virtual_Shopping.Models;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Virtual_Shopping.Controllers
 {
+	[Authorize]
 	public class AdminController : Controller
 	{
-		private readonly Context _context;
-
-		public AdminController(Context context)
-		{
-			_context = context;
-		}
+		Context _context = new Context();
 
 		public IActionResult Panel()
 		{
@@ -28,7 +25,7 @@ namespace Virtual_Shopping.Controllers
 			return View();
 		}
 
-		/* ÖĞRENCİ İŞLEMLERİ */
+		/* SATICI İŞLEMLERİ */
 		[HttpGet]
 		public IActionResult Sellers()
 		{
@@ -69,7 +66,7 @@ namespace Virtual_Shopping.Controllers
         public async Task<IActionResult> Logout()
 		{
 			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-			return RedirectToAction("Home", "Login");
+			return RedirectToAction("Login", "Login");
 		}
 	}
 }

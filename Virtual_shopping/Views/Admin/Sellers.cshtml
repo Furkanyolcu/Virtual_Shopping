@@ -1,6 +1,7 @@
-﻿@model List<Seller>
+﻿@using Virtual_Shopping.Models
+@model List<Seller>
 @{
-    ViewData["Title"] = "Seller";
+    ViewData["Title"] = "Sellers";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -36,7 +37,7 @@
                     </div>
                     <br />
                     <br />
-                    <a class="add btn btn-gradient-primary font-weight-bold" asp-controller="Admin" asp-action="AddSeller">Öğrenci Ekle</a> &nbsp;
+                    <a class="add btn btn-gradient-primary font-weight-bold" asp-controller="Admin" asp-action="AddSeller">Satıcı Ekle</a> &nbsp;
                     <br />
                     <br />
                     <div class="table-responsive">
@@ -48,11 +49,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model)
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.SellerID</td>
+                                            <td>@item.SellerName</td>
+                                        </tr>
+                                    }
+                                }
+                                else
                                 {
                                     <tr>
-                                        <td>@item.SellerID</td>
-                                        <td>@item.SellerName</td>
+                                        <td colspan="2">No sellers found.</td>
                                     </tr>
                                 }
                             </tbody>
@@ -64,4 +74,3 @@
     </div>
     <!-- content-wrapper ends -->
 </div>
-

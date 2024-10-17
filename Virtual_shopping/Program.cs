@@ -15,11 +15,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 // Authorization ayarlarý
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("CustomerOnly", policy => policy.RequireClaim("UserType", "Customer"));
-    options.AddPolicy("SellerOnly", policy => policy.RequireClaim("UserType", "Seller"));
-});
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("CustomerOnly", policy => policy.RequireClaim("UserType", "Customer"));
+//    options.AddPolicy("SellerOnly", policy => policy.RequireClaim("UserType", "Seller"));
+//	options.AddPolicy("AdminOnly", policy => policy.RequireClaim("UserType", "Admin"));
+//});
 
 
 
