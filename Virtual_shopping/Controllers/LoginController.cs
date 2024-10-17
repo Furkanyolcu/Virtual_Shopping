@@ -46,7 +46,7 @@ namespace Virtual_Shopping.Controllers
 			if (information != null)
 			{
 				await SignInUser(information.CustomerID.ToString(), information.CustomerEmail/*, "SignIn"*/);
-				return RedirectToAction("Error404", "Error");
+				return RedirectToAction("Products", "Home");
 			}
 
 			return RedirectToAction("Login");
