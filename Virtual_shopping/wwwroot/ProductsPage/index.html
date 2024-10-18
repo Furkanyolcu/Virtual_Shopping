@@ -1,0 +1,45 @@
+﻿@model IEnumerable<YourProject.Models.Product>
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Stylish E-commerce Store</title>
+        <link rel="stylesheet" href="~/css/style.css">
+    </head>
+    <body>
+        <header>
+            <nav>
+                <div class="logo">StyleShop</div>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#products">Products</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <button class="cta-button" onclick="toggleCart()">Go to Cart</button>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Discover Your Style</h1>
+                    <p>Explore our latest collection and find your perfect look.</p>
+                    <a href="#products" class="cta-button">Shop Now</a>
+                </div>
+            </section>
+
+            <section id="products" class="products">
+                @foreach (var product in Model)
+                {
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="@product.ImageUrl" alt="@product.Name">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">@product.Name</h3>
+                        <p class="product-price">$@product.Price</p>
+                        <form asp-action="AddToCart" method="post">
+                            <input type="hidden" name="productId" value="@product.Id"
