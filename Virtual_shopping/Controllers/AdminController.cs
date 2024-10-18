@@ -53,7 +53,7 @@ namespace Virtual_Shopping.Controllers
 				_context.Sellers.Add(newSeller);
 				await _context.SaveChangesAsync();
 
-				return RedirectToAction("Seller");
+				return RedirectToAction("Sellers");
 
 
 			}
