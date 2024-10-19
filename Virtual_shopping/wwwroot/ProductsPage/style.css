@@ -189,6 +189,7 @@ footer {
     margin-top: 4rem;
 }
 
+/* Cart Styles */
 #cart {
     position: fixed;
     right: -400px;
@@ -244,7 +245,7 @@ footer {
 
 .cart-total {
     font-size: 1.2rem;
-    font-weight: bold;
+    font-weight: bold; 
     margin-top: 1rem;
     text-align: center;
 }
