@@ -84,14 +84,17 @@ namespace Virtual_Shopping.Controllers
 				.ToList();
 			return View("Sellers", sellers);
 		}
-        
-		[HttpPost]
-        public IActionResult DeleteProduct(int ID)
+
+        [HttpPost]
+        public IActionResult DeleteProduct(int id)
         {
-            var product = _context.Products.Find(ID);
-            _context.Products.Remove(product);
-            _context.SaveChanges();
-            return RedirectToAction("Products","Admin");
+            var product = _context.Products.Find(id);
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Products");
         }
 
 

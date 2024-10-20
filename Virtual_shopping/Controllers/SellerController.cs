@@ -25,13 +25,13 @@ namespace Virtual_Shopping.Controllers
                     ProductName = x.ProductName,
                     ProductDescription = x.ProductDescription,
                     ProductImageURL = x.ProductImageURL,
-
+                    ProductPrice = x.ProductPrice
                 };
 
                 _context.Products.Add(newProduct);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("SellerPage","Seller");
+                return RedirectToAction("Seller",x);
 
 
             }
