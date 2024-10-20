@@ -1,60 +1,64 @@
-﻿@using Virtual_Shopping.Models
-@model List<Products>
+﻿@model IEnumerable<Virtual_Shopping.Models.Products>
+
+<!DOCTYPE html>
+<html lang="tr">
 <head>
-    <link rel="stylesheet" href="~/ProductsPage/style.css" />
-    <title>Stylish E-commerce Store</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Ticaret Mağazası</title>
+    <link rel="stylesheet" href="~/ProductsPage/style.css">
 </head>
 <body>
     <header>
         <nav>
-            <div class="logo">StyleShop</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#products">Products</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+            <div class="logo">E-Mağaza</div>
+            <ul>
+                <li><a href="#">Ana Sayfa</a></li>
+                <li><a href="#">Ürünler</a></li>
+                <li><a href="#">Hakkımızda</a></li>
+                <li><a href="#">İletişim</a></li>
             </ul>
-            <button class="cta-button" onclick="toggleCart()">Go to Cart</button>
         </nav>
     </header>
 
-    <main>
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Discover Your Style</h1>
-                <p>Explore our latest collection and find your perfect look.</p>
-                <button class="cta-button">Shop Now</button>
-            </div>
-        </section>
+    <div class="banner">
+        <div class="banner-content">
+            <h1>Yaz Koleksiyonu</h1>
+            <p>En yeni ürünlerimizi keşfedin!</p>
+        </div>
+    </div>
 
-        <section class="products">
-            @if (Model != null && Model.Count > 0)
+    <div class="container">
+        <div class="products">
+            @foreach (var product in Model)
             {
-                @foreach (var item in Model)
-                {
-                    <div class="product-card">
-                        <img src="@item.ProductImageURL" alt="@item.ProductName" />
-                        <h2>@item.ProductName</h2>
-                        <p>@item.ProductDescription</p>
-                        <p>@item.ProductPrice.ToString("C")</p>
-                        <button class="cta-button">Add to Cart</button>
-                    </div>
-                }
+                <div class="product">
+                    <img src="@product.ProductImageURL" alt="@product.ProductName">
+                    <div class="product-info">
+                        <h3>@product.ProductName</h3>
+                        <p>@product.ProductDescription</p>
+                        <p class="price">@product.ProductPrice.ToString("C")</p>
+                        <a href="#" class="btn">Sepete Ekle</a>
+                </div>
+            </div>
             }
-        </section>
-    </main>
+        </div>
+    </div>
+
+    <section class="feedback">
+        <div class="feedback-container">
+            <form class="feedback-form">
+                <h2>Öneri ve Şikayet</h2>
+                <input type="text" placeholder="Adınız" required>
+                <input type="email" placeholder="E-posta adresiniz" required>
+                <textarea placeholder="Mesajınız" required></textarea>
+                <button type="submit" class="btn">Gönder</button>
+            </form>
+        </div>
+    </section>
 
     <footer>
-        <p>&copy; 2023 StyleShop. All rights reserved.</p>
+        <p>&copy; 2023 E-Ticaret Mağazası. Tüm hakları saklıdır.</p>
     </footer>
-
-    <!-- Cart Sidebar -->
-    <div id="cart">
-        <h2 class="cart-title">Your Cart</h2>
-        <ul class="cart-items"></ul>
-        <div class="cart-total">Total: $0.00</div>
-        <button class="cart-close" onclick="toggleCart()">Close Cart</button>
-    </div>
-    <script src="~/ProductsPage/main.js"></script>
 </body>
 </html>

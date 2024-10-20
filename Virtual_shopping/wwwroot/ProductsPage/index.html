@@ -1,54 +1,64 @@
-﻿@model IEnumerable<YourProject.Models.Product>
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <link rel="stylesheet" href="/ProductsPage/style.css" />
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Ticaret Mağazası</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">E-Mağaza</div>
+            <ul>
+                <li><a href="#">Ana Sayfa</a></li>
+                <li><a href="#">Ürünler</a></li>
+                <li><a href="#">Hakkımızda</a></li>
+                <li><a href="#">İletişim</a></li>
+            </ul>
+        </nav>
+    </header>
 
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Stylish E-commerce Store</title>
-
-    </head>
-    <body>
-        <header>
-            <nav>
-                <div class="logo">StyleShop</div>
-                <ul class="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#products">Products</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-                <button class="cta-button" onclick="toggleCart()">Go to Cart</button>
-            </nav>
-        </header>
-
-        <main>
-            <section class="hero">
-                <div class="hero-content">
-                    <h1>Discover Your Style</h1>
-                    <p>Explore our latest collection and find your perfect look.</p>
-                    <button class="cta-button">Shop Now</button>
-                </div>
-            </section>
-
-            <section id="products" class="products">
-                <!-- Product cards will be dynamically added here -->
-            </section>
-        </main>
-
-        <footer>
-            <p>&copy; 2023 StyleShop. All rights reserved.</p>
-        </footer>
-
-        <!-- Cart Sidebar -->
-        <div id="cart">
-            <h2 class="cart-title">Your Cart</h2>
-            <ul class="cart-items"></ul>
-            <div class="cart-total">Total: $0.00</div>
-            <button class="cart-close" onclick="toggleCart()">Close Cart</button>
+    <div class="banner">
+        <div class="banner-content">
+            <h1>Yaz Koleksiyonu</h1>
+            <p>En yeni ürünlerimizi keşfedin!</p>
         </div>
-        <script src="/ProductsPage/main.js"></script>
+    </div>
 
-    </body>
+    <div class="container">
+        <div class="products">
+            <!-- Veritabanından gelen ürünler burada dinamik olarak listelenecek -->
+            <!-- Backend ile foreach döngüsü ile doldurulacak -->
+            <%-- Örneğin: --%>
+            <% foreach(var product in Model) { %>
+            <div class="product">
+                <img src="<%= product.ImageUrl %>" alt="<%= product.Name %>">
+                <div class="product-info">
+                    <h3><%= product.Name %></h3>
+                    <p><%= product.Description %></p>
+                    <p class="price"><%= product.Price.ToString("C") %></p>
+                    <a href="#" class="btn">Sepete Ekle</a>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+    <section class="feedback">
+        <div class="feedback-container">
+            <form class="feedback-form">
+                <h2>Öneri ve Şikayet</h2>
+                <input type="text" placeholder="Adınız" required>
+                <input type="email" placeholder="E-posta adresiniz" required>
+                <textarea placeholder="Mesajınız" required></textarea>
+                <button type="submit" class="btn">Gönder</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 E-Ticaret Mağazası. Tüm hakları saklıdır.</p>
+    </footer>
+</body>
 </html>
