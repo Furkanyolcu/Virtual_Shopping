@@ -1,13 +1,8 @@
-﻿@model IEnumerable<Virtual_Shopping.Models.Products>
-<!DOCTYPE html>
-<html lang="en">
+﻿@using Virtual_Shopping.Models
+@model List<Products>
 <head>
     <link rel="stylesheet" href="~/ProductsPage/style.css" />
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stylish E-commerce Store</title>
-
 </head>
 <body>
     <header>
@@ -32,8 +27,20 @@
             </div>
         </section>
 
-        <section id="products" class="products">
-            <!-- Product cards will be dynamically added here -->
+        <section class="products">
+            @if (Model != null && Model.Count > 0)
+            {
+                @foreach (var item in Model)
+                {
+                    <div class="product-card">
+                        <img src="@item.ProductImageURL" alt="@item.ProductName" />
+                        <h2>@item.ProductName</h2>
+                        <p>@item.ProductDescription</p>
+                        <p>@item.ProductPrice.ToString("C")</p>
+                        <button class="cta-button">Add to Cart</button>
+                    </div>
+                }
+            }
         </section>
     </main>
 
@@ -49,6 +56,5 @@
         <button class="cart-close" onclick="toggleCart()">Close Cart</button>
     </div>
     <script src="~/ProductsPage/main.js"></script>
-
 </body>
 </html>

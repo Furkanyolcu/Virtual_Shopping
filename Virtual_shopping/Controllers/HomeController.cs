@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Virtual_Shopping.Models;
 
 namespace Virtual_Shopping.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Products()
+        Context _context = new Context();
+        public async Task<IActionResult> Products()
         {
-            return View();
+            var products = await _context.Products.ToListAsync();
+            return View(products);
         }
     }
 }

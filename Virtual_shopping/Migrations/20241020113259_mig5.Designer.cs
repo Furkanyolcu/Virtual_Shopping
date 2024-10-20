@@ -11,8 +11,8 @@ using Virtual_Shopping.Models;
 namespace Virtual_Shopping.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20241018204352_oluşturma")]
-    partial class oluşturma
+    [Migration("20241020113259_mig5")]
+    partial class mig5
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

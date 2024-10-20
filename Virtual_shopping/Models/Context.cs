@@ -16,17 +16,17 @@ namespace Virtual_Shopping.Models
 
         #region SadıkDB
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer("server=localhost; database=ShoppingDB; integrated security=true; TrustServerCertificate=True;");
-        //}
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("server=localhost; database=ShoppingDB; integrated security=true; TrustServerCertificate=True;");
+        }
         #endregion
 
         #region MehmetAliDB
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("server=SAMANCI\\SQLEXPRESS; database=ShoppingDB; integrated security=true; TrustServerCertificate=True");
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("server=SAMANCI\\SQLEXPRESS; database=ShoppingDB; integrated security=true; TrustServerCertificate=True");
+        //}
         #endregion
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Admin> Admins { get; set; }

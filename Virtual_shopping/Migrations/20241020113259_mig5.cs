@@ -5,7 +5,7 @@
 namespace Virtual_Shopping.Migrations
 {
     /// <inheritdoc />
-    public partial class oluşturma : Migration
+    public partial class mig5 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
