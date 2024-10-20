@@ -25,9 +25,16 @@ namespace Virtual_Shopping.Controllers
 		{
 			return View();
 		}
+        /* ÜRÜN İŞLEMLERİ */
+        [HttpGet]
+        public IActionResult Products()
+        {
+            var products = _context.Products.ToList();
+            return View(products);
+        }
 
-		/* SATICI İŞLEMLERİ */
-		[HttpGet]
+        /* SATICI İŞLEMLERİ */
+        [HttpGet]
 		public IActionResult Sellers()
 		{
 			var seller = _context.Sellers.ToList();
@@ -62,6 +69,14 @@ namespace Virtual_Shopping.Controllers
 		}
 
 		[HttpPost]
+		public IActionResult SearchProduct(string searchTerm)
+		{
+			var products = _context.Products
+				.Where(s => s.ProductName.Contains(searchTerm))
+				.ToList();
+			return View("Products", products);
+		}
+		[HttpPost]
 		public IActionResult SearchSeller(string searchTerm)
 		{
 			var sellers = _context.Sellers
@@ -69,9 +84,18 @@ namespace Virtual_Shopping.Controllers
 				.ToList();
 			return View("Sellers", sellers);
 		}
+        
+		[HttpPost]
+        public IActionResult DeleteProduct(int ID)
+        {
+            var product = _context.Products.Find(ID);
+            _context.Products.Remove(product);
+            _context.SaveChanges();
+            return RedirectToAction("Products","Admin");
+        }
 
 
-		public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout()
 		{
 			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 			return RedirectToAction("Login", "Login");
