@@ -187,124 +187,29 @@
 					<button type="submit" class="btn btn-primary">Ürün Ekle</button>
 				</form>
 			</section>
-			@if (Model != null && Model.SellerProducts != null && Model.SellerProducts.Count > 0)
-			{
-				@foreach (var product in Model.SellerProducts)
+			<section>
+				@if (Model != null && Model.SellerProducts != null && Model.SellerProducts.Count > 0)
 				{
-					<div class="product-card">
-						<img src="@product.ProductImageURL" alt="@product.ProductName" class="product-image">
-						<div class="product-info">
-							<h3 class="product-name">@product.ProductName</h3>
-							<p class="product-description">@product.ProductDescription</p>
-							<p class="product-price">@product.ProductPrice TL</p>
-							<div class="product-actions">
-								<form method="post" asp-page-handler="DeleteProduct">
-									<input type="hidden" name="index" value="@Model.SellerProducts.IndexOf(product)" />
-									<button type="submit" class="btn btn-small btn-delete">Sil</button>
-								</form>
+					@foreach (var product in Model.SellerProducts)
+					{
+						<div class="product-card">
+							<img src="@product.ProductImageURL" alt="@product.ProductName" class="product-image">
+							<div class="product-info">
+								<h3 class="product-name">@product.ProductName</h3>
+								<p class="product-description">@product.ProductDescription</p>
+								<p class="product-price">@product.ProductPrice TL</p>
+								<div class="product-actions">
+									<form method="post" asp-page-handler="DeleteProduct">
+										<input type="hidden" name="index" value="@Model.SellerProducts.IndexOf(product)" />
+										<button type="submit" class="btn btn-small btn-delete">Sil</button>
+									</form>
+								</div>
 							</div>
 						</div>
-					</div>
+					}
 				}
-			}
-
-			<section>
+			</section>
 		</main>
 	</div>
-
-	@* <script>
-	document.addEventListener('DOMContentLoaded', () => {
-	const productForm = document.getElementById('productForm');
-	const productList = document.getElementById('productList');
-	let products = JSON.parse(localStorage.getItem('products')) || [];
-
-	function renderProducts() {
-	productList.innerHTML = '';
-	products.forEach((product, index) => {
-	const productCard = document.createElement('div');
-	productCard.className = 'product-card';
-	productCard.innerHTML = `
-	<img src="${product.imageURL}" alt="${product.name}" class="product-image">
-	<div class="product-info">
-	<h3 class="product-name">${product.name}</h3>
-	<p class="product-description">${product.description}</p>
-	<p class="product-price">${product.price} TL</p>
-	<div class="product-actions">
-	<button class="btn btn-small btn-edit" data-index="${index}">Düzenle</button>
-	<button class="btn btn-small btn-delete" data-index="${index}">Sil</button>
-	</div>
-	</div>
-	`;
-	productList.appendChild(productCard);
-	});
-
-	// Düzenleme ve silme butonları için olay dinleyicileri
-	document.querySelectorAll('.btn-edit').forEach(button => {
-	button.addEventListener('click', (e) => {
-	const index = e.target.getAttribute('data-index');
-	editProduct(index);
-	});
-	});
-
-	document.querySelectorAll('.btn-delete').forEach(button => {
-	button.addEventListener('click', (e) => {
-	const index = e.target.getAttribute('data-index');
-	deleteProduct(index);
-	});
-	});
-	}
-
-	function addProduct(product) {
-	products.push(product);
-	localStorage.setItem('products', JSON.stringify(products));
-	renderProducts();
-	}
-
-	function editProduct(index) {
-	const product = products[index];
-	document.getElementById('productName').value = product.name;
-	document.getElementById('productDescription').value = product.description;
-	document.getElementById('productPrice').value = product.price;
-	document.getElementById('productImageURL').value = product.imageURL;
-
-	productForm.onsubmit = (e) => {
-	e.preventDefault();
-	products[index] = {
-	name: document.getElementById('productName').value,
-	description: document.getElementById('productDescription').value,
-	price: document.getElementById('productPrice').value,
-	imageURL: document.getElementById('productImageURL').value
-	};
-	localStorage.setItem('products', JSON.stringify(products));
-	renderProducts();
-	productForm.onsubmit = submitForm; // Reset form submit handler
-	productForm.reset();
-	};
-	}
-
-	function deleteProduct(index) {
-	products.splice(index, 1);
-	localStorage.setItem('products', JSON.stringify(products));
-	renderProducts();
-	}
-
-	function submitForm(e) {
-	e.preventDefault();
-	const newProduct = {
-	name: document.getElementById('productName').value,
-	description: document.getElementById('productDescription').value,
-	price: document.getElementById('productPrice').value,
-	imageURL: document.getElementById('productImageURL').value
-	};
-	addProduct(newProduct);
-	productForm.reset();
-	}
-
-	productForm.onsubmit = submitForm;
-
-	// İlk yükleme
-	renderProducts();
-	});
-	</script> *@
 </body>
 </html>

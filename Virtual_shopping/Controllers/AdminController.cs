@@ -94,8 +94,9 @@ namespace Virtual_Shopping.Controllers
                 _context.Products.Remove(product);
                 _context.SaveChanges();
             }
-            return RedirectToAction("Products");
+            return View();
         }
+
 
 
         public async Task<IActionResult> Logout()

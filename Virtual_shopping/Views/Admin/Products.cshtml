@@ -1,83 +1,80 @@
 ﻿@using Virtual_Shopping.Models
 @model List<Products>
 @{
-    ViewData["Title"] = "Products";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+	ViewData["Title"] = "Products";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="main-panel">
-    <div class="content-wrapper">
-        <div class="page-header">
-            <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white mr-2">
-                    <i class="mdi mdi-home"></i>
-                </span> Ürünler
-            </h3>
-            <nav aria-label="breadcrumb">
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item active" aria-current="page">
-                        <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-        <div class="col-md-16 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Satıcı Detayları</h4>
-                    <div class="search-field d-none d-md-block">
-                        <form class="d-flex align-items-center h-100" asp-contoller="Admin" asp-action="SearchProduct">
-                            <div class="input-group">
-                                <div class="input-group-prepend bg-transparent">
-                                    <i class="input-group-text border-0 mdi mdi-magnify"></i>
-                                </div>
-                                <input type="text" class="form-control bg-transparent border-0" placeholder="Ürün Ara">
-                            </div>
-                        </form>
-                    </div>
-                    <br />
-                    <br />
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th> ID </th>
-                                    <th> İsim </th>
-                                    <th> Kategori </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model != null && Model.Count > 0)
-                                {
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td>@item.ProductID</td>
-                                            <td>@item.ProductName</td>
-                                            <td>@item.ProductCategoryID</td>
-                                            <td>
-                                                <form asp-controller="Admin" asp-action="DeleteProduct" method="post" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                                                    <input type="hidden" name="id" value="@item.ProductID" />
-                                                    <button type="submit" class="btn btn-primary btn-lg">Delete</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    
-                                    }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="2">No product found.</td>
-                                    </tr>
-                                } 
-                                
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- content-wrapper ends -->
+	<div class="content-wrapper">
+		<div class="page-header">
+			<h3 class="page-title">
+				<span class="page-title-icon bg-gradient-primary text-white mr-2">
+					<i class="mdi mdi-home"></i>
+				</span> Ürünler
+			</h3>
+			<nav aria-label="breadcrumb">
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item active" aria-current="page">
+						<span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<div class="col-md-16 grid-margin stretch-card">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="card-title">Satıcı Detayları</h4>
+					<div class="search-field d-none d-md-block">
+						<form class="d-flex align-items-center h-100" asp-contoller="Admin" asp-action="SearchProduct">
+							<div class="input-group">
+								<div class="input-group-prepend bg-transparent">
+									<i class="input-group-text border-0 mdi mdi-magnify"></i>
+								</div>
+								<input type="text" class="form-control bg-transparent border-0" placeholder="Ürün Ara">
+							</div>
+						</form>
+					</div>
+					<br />
+					<br />
+					<div class="table-responsive">
+						<table class="table">
+							<thead>
+								<tr>
+									<th> ID </th>
+									<th> İsim </th>
+									<th> Kategori </th>
+								</tr>
+							</thead>
+							<tbody>
+								@if (Model != null && Model.Count > 0)
+								{
+									@foreach (var item in Model)
+									{
+										<tr>
+											<td>@item.ProductID</td>
+											<td>@item.ProductName</td>
+											<td>@item.ProductCategoryID</td>
+											<td>
+												<a asp-controller="Admin" href="DeleteProduct/@item.ProductID" method="post">Delete</a>
+											</td>
+										</tr>
+
+									}
+								}
+								else
+								{
+									<tr>
+										<td colspan="2">No product found.</td>
+									</tr>
+								}
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- content-wrapper ends -->
 </div>
