@@ -94,8 +94,8 @@ namespace Virtual_Shopping.Controllers
                 _context.Products.Remove(product);
                 _context.SaveChanges();
             }
-            return View();
-        }
+            return RedirectToAction("Products");
+		}
 
 
 

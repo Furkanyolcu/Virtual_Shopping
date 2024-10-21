@@ -56,7 +56,9 @@
 											<td>@item.ProductName</td>
 											<td>@item.ProductCategoryID</td>
 											<td>
-												<a  href="Admin/DeleteProduct/@item.ProductID" method="post">Delete</a>
+												<form method="post" action="/Admin/DeleteProduct/@item.ProductID">
+													<input type="submit" value="Ürünü Sil">
+												</form>
 											</td>
 										</tr>
 

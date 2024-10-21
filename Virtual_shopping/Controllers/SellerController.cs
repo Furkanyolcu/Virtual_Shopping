@@ -17,28 +17,52 @@ namespace Virtual_Shopping.Controllers
             return View(products);
         }
         [HttpPost]
-        public async Task<IActionResult> AddProduct(Products x)
+        public async Task<IActionResult> AddProduct(string ProductName, string ProductDescription, string ProductImageURL, int ProductPrice)
         {
-            if (ModelState.IsValid)
+            var newProduct = new Products
             {
-                var newProduct = new Products
-                {
-                    ProductName = x.ProductName,
-                    ProductDescription = x.ProductDescription,
-                    ProductImageURL = x.ProductImageURL,
-                    ProductPrice = x.ProductPrice
-                };
+                ProductName = ProductName,
+                ProductDescription = ProductDescription,
+                ProductImageURL = ProductImageURL,
+                ProductPrice = ProductPrice
+            };
 
-                _context.Products.Add(newProduct);
+            _context.Products.Add(newProduct);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("SellerPage");
+        }
+        [HttpPost]
+        public IActionResult DeleteProduct(int id)
+        {
+            var product = _context.Products.Find(id);
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("SellerPage");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> updateProduct(int id, string ProductName, string ProductDescription, string ProductImageURL, int ProductPrice)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product != null)
+            {
+                product.ProductName = ProductName;
+                product.ProductDescription = ProductDescription;
+                product.ProductImageURL = ProductImageURL;
+                product.ProductPrice = ProductPrice;
+
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("Seller",x);
-
-
+                return RedirectToAction("SellerPage");
             }
-            return View("Seller","Login");
+            return View("SellerPage");
         }
-        
+
+
 
     }
 }
