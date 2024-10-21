@@ -37,5 +37,15 @@
     <footer>
     </footer>
     <script src="~/Login_Form/main.js"></script>
+    <script src="~/Login_Form/main.js"></script>
+    <script>
+        // Kullanıcı giriş hatası olup olmadığını kontrol et
+        window.onload = function () {
+            var errorMessage = '@TempData["ErrorMessage"]'; // Controller'dan gelen hata mesajı
+            if (errorMessage) {
+                alert(errorMessage); // Hata mesajını göster
+            }
+        }
+    </script>
 </body>
 </html>

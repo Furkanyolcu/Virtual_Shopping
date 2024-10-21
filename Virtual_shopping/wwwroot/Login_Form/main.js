@@ -9,3 +9,11 @@ signUpButton.addEventListener("click", () => {
 signInButton.addEventListener("click", () => {
 	container.classList.remove("right-panel-active");
 });
+function showError(message) {
+    document.getElementById('errorMessage').innerText = message;
+    document.getElementById('errorPopup').style.display = 'block';
+}
+
+function closePopup() {
+    document.getElementById('errorPopup').style.display = 'none';
+}

@@ -49,8 +49,11 @@ namespace Virtual_Shopping.Controllers
                 return RedirectToAction("Products", "Home");
             }
 
+            // Hatalı giriş durumunda bir mesaj ayarla
+            TempData["ErrorMessage"] = "Gecersiz email veya sifre.";
             return RedirectToAction("Login");
         }
+
 
         [HttpGet]
         public IActionResult SellerLogin()
@@ -70,6 +73,7 @@ namespace Virtual_Shopping.Controllers
             }
 
             // Return to the login page if authentication fails
+            TempData["ErrorMessage"] = "Gecersiz email veya sifre.";
             return RedirectToAction("SellerLogin","Login");
         }
 
@@ -90,7 +94,7 @@ namespace Virtual_Shopping.Controllers
                 await SignInUser(information.AdminID.ToString(), information.AdminEmail, "Admin");
                 return RedirectToAction("Panel", "Admin");
             }
-
+            TempData["ErrorMessage"] = "Gecersiz email veya sifre.";
             return RedirectToAction("Admin", "Login");
         }
 
