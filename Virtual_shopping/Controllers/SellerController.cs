@@ -11,9 +11,10 @@ namespace Virtual_Shopping.Controllers
         [Authorize(Policy = "SellerOnly")]
 
         [HttpGet]
-        public IActionResult SellerPage()
+        public async Task<IActionResult> SellerPageAsync()
         {
-            return View();
+            var products = await _context.Products.ToListAsync();
+            return View(products);
         }
         [HttpPost]
         public async Task<IActionResult> AddProduct(Products x)
