@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VirtualShopping</title>
-    <link rel="stylesheet" href="~/ProductsPage/style.css">
+    <link href="~/productspage/style.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -18,6 +18,10 @@
                 <li><a href="#">Hakkımızda</a></li>
                 <li><a href="#">İletişim</a></li>
             </ul>
+            <button id="cartButton" class="cart-button">
+                <span class="cart-icon">🛒</span>
+                <span id="cartItemCount">0</span>
+            </button>
         </nav>
     </header>
     <div class="banner">
@@ -32,16 +36,23 @@
             @foreach (var x in Model)
             {
                 <div class="product">
-                    <img src="@x.ProductImageURL" alt="@x.ProductName">
+                    <img src="@x.ProductImageURL" alt="@x.ProductImageURL">
                     <div class="product-info">
                         <h3>@x.ProductName</h3>
                         <p>@x.ProductDescription</p>
                         <p class="price">@x.ProductPrice.ToString("C")</p>
                         <a href="#" class="btn">Sepete Ekle</a>
+                    </div>
                 </div>
-            </div>
             }
         </div>
+    </div>
+
+    <div id="cartPanel" class="cart-panel">
+        <h2>Sepetim</h2>
+        <div id="cartItems"></div>
+        <div id="cartTotal">Toplam: ₺0.00</div>
+        <button id="closeCart" class="btn">Sepeti Kapat</button>
     </div>
 
     <section class="feedback">
@@ -59,5 +70,6 @@
     <footer>
         <p>&copy; 2023 VirtualShopping. Tüm hakları saklıdır.</p>
     </footer>
+    <script src="~/productspage/main.js"></script>
 </body>
 </html>

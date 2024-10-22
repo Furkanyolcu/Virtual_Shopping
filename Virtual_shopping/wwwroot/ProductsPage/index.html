@@ -3,22 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Ticaret Mağazası</title>
+    <title>VirtualShopping</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
         <nav>
-            <div class="logo">E-Mağaza</div>
+            <div class="logo">VirtualShopping</div>
             <ul>
                 <li><a href="#">Ana Sayfa</a></li>
                 <li><a href="#">Ürünler</a></li>
                 <li><a href="#">Hakkımızda</a></li>
                 <li><a href="#">İletişim</a></li>
             </ul>
+            <button id="cartButton" class="cart-button">
+                <span class="cart-icon">🛒</span>
+                <span id="cartItemCount">0</span>
+            </button>
         </nav>
     </header>
-
     <div class="banner">
         <div class="banner-content">
             <h1>Yaz Koleksiyonu</h1>
@@ -28,21 +31,26 @@
 
     <div class="container">
         <div class="products">
-            <!-- Veritabanından gelen ürünler burada dinamik olarak listelenecek -->
-            <!-- Backend ile foreach döngüsü ile doldurulacak -->
-            <%-- Örneğin: --%>
-            <% foreach(var product in Model) { %>
+            @foreach (var x in Model)
+            {
             <div class="product">
-                <img src="<%= product.ImageUrl %>" alt="<%= product.Name %>">
+                <img src="@x.ProductImageURL" alt="@x.ProductName">
                 <div class="product-info">
-                    <h3><%= product.Name %></h3>
-                    <p><%= product.Description %></p>
-                    <p class="price"><%= product.Price.ToString("C") %></p>
+                    <h3>@x.ProductName</h3>
+                    <p>@x.ProductDescription</p>
+                    <p class="price">@x.ProductPrice.ToString("C")</p>
                     <a href="#" class="btn">Sepete Ekle</a>
                 </div>
             </div>
-            <% } %>
+            }
         </div>
+    </div>
+
+    <div id="cartPanel" class="cart-panel">
+        <h2>Sepetim</h2>
+        <div id="cartItems"></div>
+        <div id="cartTotal">Toplam: ₺0.00</div>
+        <button id="closeCart" class="btn">Sepeti Kapat</button>
     </div>
 
     <section class="feedback">
@@ -58,7 +66,9 @@
     </section>
 
     <footer>
-        <p>&copy; 2023 E-Ticaret Mağazası. Tüm hakları saklıdır.</p>
+        <p>&copy; 2023 VirtualShopping. Tüm hakları saklıdır.</p>
     </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
