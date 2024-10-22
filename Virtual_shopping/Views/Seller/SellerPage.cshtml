@@ -19,7 +19,7 @@
         </div>
     </nav>
 
-   
+
     <div class="container">
         <div class="dashboard">
             <div class="product-form-container">
@@ -50,16 +50,16 @@
                                 <form asp-action="updateProduct" method="post" class="update-form">
                                     <input type="hidden" name="id" value="@x.ProductID" />
                                     @* <input type="text" name="ProductName" value="@x.ProductName" required />
-                                    <textarea name="ProductDescription" required>@x.ProductDescription</textarea>
-                                    <input type="url" name="ProductImageURL" value="@x.ProductImageURL" required />
-                                    <input type="number" name="ProductPrice" value="@x.ProductPrice" step="0.01" required /> *@
+                                <textarea name="ProductDescription" required>@x.ProductDescription</textarea>
+                                <input type="url" name="ProductImageURL" value="@x.ProductImageURL" required />
+                                <input type="number" name="ProductPrice" value="@x.ProductPrice" step="0.01" required /> *@
                                     <div class="button-group">
                                         <button type="submit" class="update-btn"><i class="fas fa-edit"></i> Güncelle</button>
                                     </div>
                                 </form>
-                                        <form method="post" action="/Seller/DeleteProduct/@x.ProductID" class="delete-form">
-                                            <button type="submit" class="delete-btn"><i class="fas fa-trash"></i> Sil</button>
-                                 </form>
+                                <form method="post" action="/Seller/DeleteProduct/@x.ProductID" class="delete-form">
+                                    <button type="submit" class="delete-btn"><i class="fas fa-trash"></i> Sil</button>
+                                </form>
                             </div>
                         </div>
                     }
