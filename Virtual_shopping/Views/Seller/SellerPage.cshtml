@@ -2,82 +2,76 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="~/sellerpage/style.css" rel="stylesheet" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="~/sellerpage/style.css" rel="stylesheet" />
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <a href="#" class="logo">VirtualShopping</a>
-            <ul class="nav-links">
-                <li><a href="#"><i class="fas fa-home"></i> Ana Sayfa</a></li>
-                <li><a href="#"><i class="fas fa-box"></i> Ürünler</a></li>
-                <li><a href="#"><i class="fas fa-chart-line"></i> İstatistikler</a></li>
-                <li><a href="#"><i class="fas fa-cog"></i> Ayarlar</a></li>
-            </ul>
-        </div>
-    </nav>
+	<nav class="navbar">
+		<div class="container">
+			<a href="#" class="logo">VirtualShopping</a>
+			<ul class="nav-links">
+				<li><a href="#"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+				<li><a href="#"><i class="fas fa-box"></i> Ürünler</a></li>
+				<li><a href="#"><i class="fas fa-chart-line"></i> İstatistikler</a></li>
+				<li><a href="#"><i class="fas fa-cog"></i> Ayarlar</a></li>
+			</ul>
+		</div>
+	</nav>
 
 
-    <div class="container">
-        <div class="dashboard">
-            <div class="product-form-container">
-                <h2><i class="fas fa-plus-circle"></i> Yeni Ürün Ekle</h2>
-                <form method="post" action="AddProduct" id="productForm" class="product-form">
-                    <input type="text" id="productName" name="ProductName" placeholder="Ürün Adı" required>
-                    <textarea id="productDescription" name="ProductDescription" placeholder="Ürün Açıklaması" required></textarea>
-                    <input type="url" id="productImageURL" name="ProductImageURL" placeholder="Ürün Resmi URL" required>
-                    <input type="number" id="productPrice" name="ProductPrice" placeholder="Ürün Fiyatı" step="0.01" required>
-                    <button type="submit"><i class="fas fa-save"></i> Ürün Ekle</button>
-                </form>
+	<div class="container">
+		<div class="dashboard">
+			<div class="product-form-container">
+				<h2><i class="fas fa-plus-circle"></i> Yeni Ürün Ekle</h2>
+				<form method="post" action="AddProduct" id="productForm" class="product-form">
+					<input type="text" id="productName" name="ProductName" placeholder="Ürün Adı" required>
+					<textarea id="productDescription" name="ProductDescription" placeholder="Ürün Açıklaması" required></textarea>
+					<input type="url" id="productImageURL" name="ProductImageURL" placeholder="Ürün Resmi URL" required>
+					<input type="number" id="productPrice" name="ProductPrice" placeholder="Ürün Fiyatı" step="0.01" required>
+					<button type="submit"><i class="fas fa-save"></i> Ürün Ekle</button>
+				</form>
 
-            </div>
+			</div>
 
-            <div class="product-list-container">
-                <h2><i class="fas fa-list"></i> Mevcut Ürünler</h2>
-                <div class="product-list">
-                    @foreach (var x in Model)
-                    {
-                        <div class="product-item">
-                            <img src="@x.ProductImageURL" alt="@x.ProductName">
-                            <div class="product-details">
-                                <h3>@x.ProductName</h3>
-                                <p>@x.ProductDescription</p>
-                                <p class="price">@x.ProductPrice.ToString("C")</p>
-                            </div>
-                            <div class="product-actions">
-                                <form asp-action="updateProduct" method="post" class="update-form">
-                                    <input type="hidden" name="id" value="@x.ProductID" />
-                                    @* <input type="text" name="ProductName" value="@x.ProductName" required />
-                                <textarea name="ProductDescription" required>@x.ProductDescription</textarea>
-                                <input type="url" name="ProductImageURL" value="@x.ProductImageURL" required />
-                                <input type="number" name="ProductPrice" value="@x.ProductPrice" step="0.01" required /> *@
-                                    <div class="button-group">
-                                        <button type="submit" class="update-btn"><i class="fas fa-edit"></i> Güncelle</button>
-                                    </div>
-                                </form>
-                                <form method="post" action="/Seller/DeleteProduct/@x.ProductID" class="delete-form">
-                                    <button type="submit" class="delete-btn"><i class="fas fa-trash"></i> Sil</button>
-                                </form>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
+			<div class="product-list-container">
+				<h2><i class="fas fa-list"></i> Mevcut Ürünler</h2>
+				<div class="product-list">
+					@foreach (var x in Model)
+					{
+						<div class="product-item">
+							<img src="@x.ProductImageURL" alt="@x.ProductName">
+							<div class="product-details">
+								<h3>@x.ProductName</h3>
+								<p>@x.ProductDescription</p>
+								<p class="price">@x.ProductPrice.ToString("C")</p>
+							</div>
+							<div class="product-actions">
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2023 VirtualShopping. Tüm hakları saklıdır.</p>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-linkedin"></i></a>
-            </div>
-        </div>
-    </footer>
+								<div class="button-group">
+									<button type="submit" class="update-btn"><i class="fas fa-edit"></i> Güncelle</button>
+								</div>
+								<form method="post" action="/Seller/DeleteProduct/@x.ProductID" class="delete-form">
+									<button type="submit" class="delete-btn"><i class="fas fa-trash"></i> Sil</button>
+								</form>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer class="footer">
+		<div class="container">
+			<p>&copy; 2023 VirtualShopping. Tüm hakları saklıdır.</p>
+			<div class="social-links">
+				<a href="#"><i class="fab fa-facebook"></i></a>
+				<a href="#"><i class="fab fa-twitter"></i></a>
+				<a href="#"><i class="fab fa-instagram"></i></a>
+				<a href="#"><i class="fab fa-linkedin"></i></a>
+			</div>
+		</div>
+	</footer>
 </body>
 </html>

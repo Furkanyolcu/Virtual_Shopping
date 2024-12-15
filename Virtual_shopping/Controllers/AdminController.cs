@@ -16,8 +16,8 @@ namespace Virtual_Shopping.Controllers
 
 		public IActionResult Panel()
 		{
-			//var admin = _context.Admins.FirstOrDefault();	
-			return View(/*admin*/);
+			var notifications = _context.Notifications.ToList();
+			return View(notifications);
 		}
 
 		/* PROFİL İŞLEMLERİ */
@@ -99,7 +99,27 @@ namespace Virtual_Shopping.Controllers
 
 
 
-        public async Task<IActionResult> Logout()
+		[HttpGet]
+		public IActionResult Notification()
+		{
+			var notifications = _context.Notifications.ToList();
+			return View(notifications);
+		}
+		[HttpPost]
+		public IActionResult DeleteNotification(int id)
+		{
+			var notification = _context.Notifications.Find(id);
+			if (notification != null)
+			{
+				_context.Notifications.Remove(notification);
+				_context.SaveChanges();
+			}
+			return RedirectToAction("Notification");
+		}
+
+
+
+		public async Task<IActionResult> Logout()
 		{
 			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 			return RedirectToAction("Login", "Login");
