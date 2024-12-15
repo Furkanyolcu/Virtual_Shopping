@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\leaflet_turkey_updated_files\.vs\leaflet_turkey_updated_files\v17\DocumentLayout.json" />
+    <Content Include="wwwroot\leaflet_turkey_updated_files\.vs\ProjectSettings.json" />
+    <Content Include="wwwroot\leaflet_turkey_updated_files\.vs\VSWorkspaceState.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.1.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.10" />
@@ -20,6 +26,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\leaflet_turkey_updated_files\.vs\leaflet_turkey_updated_files\config\applicationhost.config" />
+    <None Include="wwwroot\leaflet_turkey_updated_files\.vs\leaflet_turkey_updated_files\FileContentIndex\5cb9b534-772c-4e9d-964c-3ca3cbe5a713.vsidx" />
+    <None Include="wwwroot\leaflet_turkey_updated_files\.vs\leaflet_turkey_updated_files\FileContentIndex\86249c06-7726-4c81-af51-237d7a4d314b.vsidx" />
+    <None Include="wwwroot\leaflet_turkey_updated_files\.vs\slnx.sqlite" />
   </ItemGroup>
 
 </Project>
