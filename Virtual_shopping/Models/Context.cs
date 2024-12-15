@@ -37,7 +37,9 @@ namespace Virtual_Shopping.Models
         public DbSet<Categories> Categories { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Logs> Logs { get; set; }
+        public DbSet<Token> Tokens { get; set; }
 
-	}
+
+    }
 }
 

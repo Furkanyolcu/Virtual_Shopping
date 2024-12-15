@@ -53,7 +53,7 @@
 
 var map = L.map('map', {
     center: [38.3552, 38.3095],  // Malatya merkezi
-    zoom: 8,                   // Daha yakın bir zoom seviyesi
+    zoom: 10,                   // Daha yakın bir zoom seviyesi
     zoomSnap: 0.5
 });
 
