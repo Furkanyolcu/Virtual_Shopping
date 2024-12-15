@@ -11,6 +11,8 @@ namespace Virtual_Shopping.Controllers
     {
 
 		Context c = new Context();
+		LogController log = new LogController();
+
         private readonly EmailService _emailService;
 
         public LoginController( EmailService emailService)
@@ -18,6 +20,7 @@ namespace Virtual_Shopping.Controllers
             _emailService = emailService;
         }
         public IActionResult Login()
+
 		{
 			return View();
 		}
@@ -182,28 +185,10 @@ namespace Virtual_Shopping.Controllers
 
 			if (information != null)
 			{
-                c.Notifications.Add(new Notification
-				{
-					NotificationMessage = "Admin " + information.AdminEmail + " sisteme giris yapti.",
-					CreateTime = DateTime.Now,
-					IsRead = false
-				});
-				await c.SaveChangesAsync();
 				await SignInUser(information.AdminID.ToString(), information.AdminEmail, "Admin");
-
-				return RedirectToAction("Panel", "Admin");
+				await log.LoginLog(x.AdminEmail, "Admin", true);
 			}
-			else
-			{
-                c.Notifications.Add(new Notification
-				{
-					NotificationMessage = "Admin " + x.AdminEmail + " sisteme giris yapamadı",
-					CreateTime = DateTime.Now,
-					IsRead = false
-				});
-				await c.SaveChangesAsync();
-			}
-
+			await log.LoginLog(x.AdminEmail, "Admin", false);
 			TempData["ErrorMessage"] = "Gecersiz email veya sifre.";
 			return RedirectToAction("Admin", "Login");
 		}

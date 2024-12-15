@@ -16,8 +16,7 @@ namespace Virtual_Shopping.Controllers
 
 		public IActionResult Panel()
 		{
-			var notifications = _context.Notifications.ToList();
-			return View(notifications);
+			return View();
 		}
 
 		/* PROFİL İŞLEMLERİ */
@@ -117,6 +116,12 @@ namespace Virtual_Shopping.Controllers
 			return RedirectToAction("Notification");
 		}
 
+		[HttpGet]
+		public IActionResult Logs()
+		{
+			var log = _context.Logs.ToList();
+			return View(log);
+		}
 
 
 		public async Task<IActionResult> Logout()
