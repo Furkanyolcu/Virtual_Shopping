@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Virtual_Shopping.Controllers;
 using Virtual_Shopping.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 //builder.Services.AddScoped<IProductService, ProductService>();
 //builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<LogController>();
 
 
 // Cookie Authentication'ý ekle
@@ -38,6 +40,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Login}/{id?}");
+    pattern: "{controller=Login}/{action=Admin}/{id?}");
 
 app.Run();

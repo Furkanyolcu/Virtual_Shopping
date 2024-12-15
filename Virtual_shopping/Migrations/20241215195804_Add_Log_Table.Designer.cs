@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Virtual_Shopping.Models;
 
@@ -11,9 +12,11 @@ using Virtual_Shopping.Models;
 namespace Virtual_Shopping.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20241215195804_Add_Log_Table")]
+    partial class Add_Log_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace Virtual_Shopping.Migrations
 
                     b.HasIndex("SellersSellerID");
 
-                    b.ToTable("ProductsSeller", (string)null);
+                    b.ToTable("ProductsSeller");
                 });
 
             modelBuilder.Entity("Virtual_Shopping.Models.Admin", b =>
@@ -59,7 +62,7 @@ namespace Virtual_Shopping.Migrations
 
                     b.HasKey("AdminID");
 
-                    b.ToTable("Admins", (string)null);
+                    b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("Virtual_Shopping.Models.Categories", b =>
@@ -80,7 +83,7 @@ namespace Virtual_Shopping.Migrations
 
                     b.HasKey("CategoryID");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Virtual_Shopping.Models.Customer", b =>
@@ -105,7 +108,7 @@ namespace Virtual_Shopping.Migrations
 
                     b.HasKey("CustomerID");
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("Virtual_Shopping.Models.Logs", b =>
@@ -129,7 +132,7 @@ namespace Virtual_Shopping.Migrations
 
                     b.HasKey("LogID");
 
-                    b.ToTable("Logs", (string)null);
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("Virtual_Shopping.Models.Notification", b =>
@@ -152,7 +155,7 @@ namespace Virtual_Shopping.Migrations
 
                     b.HasKey("NotificationID");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Virtual_Shopping.Models.Products", b =>
@@ -183,7 +186,7 @@ namespace Virtual_Shopping.Migrations
 
                     b.HasKey("ProductID");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Virtual_Shopping.Models.Seller", b =>
@@ -208,7 +211,7 @@ namespace Virtual_Shopping.Migrations
 
                     b.HasKey("SellerID");
 
-                    b.ToTable("Sellers", (string)null);
+                    b.ToTable("Sellers");
                 });
 
             modelBuilder.Entity("ProductsSeller", b =>
