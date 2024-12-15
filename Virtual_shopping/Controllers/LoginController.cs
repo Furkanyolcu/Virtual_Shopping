@@ -7,11 +7,17 @@ using Virtual_Shopping.Models;
 
 namespace Virtual_Shopping.Controllers
 {
-	public class LoginController : Controller
-	{
-		Context c = new Context();
+    public class LoginController : Controller
+    {
 
-		public IActionResult Login()
+		Context c = new Context();
+        private readonly EmailService _emailService;
+
+        public LoginController( EmailService emailService)
+        {
+            _emailService = emailService;
+        }
+        public IActionResult Login()
 		{
 			return View();
 		}
@@ -20,42 +26,127 @@ namespace Virtual_Shopping.Controllers
 		public IActionResult SignUp()
 		{
 			return View();
+
 		}
-
-		[HttpPost]
-		public async Task<IActionResult> SignUp(Customer d)
-		{
-			c.Customers.Add(d);
-			await c.SaveChangesAsync();
-
+        [HttpGet]
+        public IActionResult ActivateAccount()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SignUp(Customer d)
+        {
+           
+      if (await c.Customers.AnyAsync(x => x.CustomerEmail == d.CustomerEmail))
+           {
+         ModelState.AddModelError("CustomerEmail", "Bu e-posta adresi zaten kullanılıyor.");
 			return RedirectToAction("Login", "Login");
-		}
+         }
 
-		[HttpGet]
+            // Kullanıcıyı pasif olarak kaydet
+            d.IsActive = false;
+
+            // Token oluştur
+            var token = new Token
+            {
+                Value = Guid.NewGuid().ToString(),
+                ExpirationDate = DateTime.Now.AddMinutes(15), // 15 dakika
+                IsActive = true, // Token geçerli
+                Customer = d // Token, bu kullanıcıya atanacak
+            };
+
+            c.Customers.Add(d);
+            c.Tokens.Add(token);
+            await c.SaveChangesAsync();
+
+            // Doğrulama URL'si oluştur
+            var verificationUrl = Url.Action("ActivateAccount", "Login", new { token = token.Value }, Request.Scheme);
+
+            // E-posta gönder (Token sadece metin olarak gönderilecek)
+            await _emailService.SendEmailAsync(
+                d.CustomerEmail,
+                "E-posta Doğrulama",
+                $"Merhaba {d.CustomerName}, lütfen hesabınızı doğrulamak için aşağıdaki bağlantıya tıklayın veya URL'yi tarayıcınıza yapıştırın: {verificationUrl}"
+            );
+
+            // Kullanıcıyı Login sayfasına yönlendir
+            return RedirectToAction("Login", "Login");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ActivateAccount([FromBody] string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return Json(new { success = false, message = "Geçersiz istek: Token boş olamaz." });
+            }
+
+            // Token'ı ve ilişkili kullanıcıyı bul
+            var userToken = await c.Tokens.Include(t => t.Customer)
+                                          .FirstOrDefaultAsync(t => t.Value == token && t.IsActive);
+
+            // Token bulunamazsa veya geçersizse
+            if (userToken == null)
+            {
+                return Json(new { success = false, message = "Token geçersiz veya süresi dolmuş." });
+            }
+
+            // Kullanıcı zaten aktifse
+            if (userToken.Customer.IsActive)
+            {
+                return Json(new { success = false, message = "Hesabınız zaten aktif durumda." });
+            }
+
+            // Kullanıcıyı aktif hale getir ve token'ı geçersiz yap
+            userToken.Customer.IsActive = true;
+            userToken.IsActive = false;
+            userToken.ExpirationDate = DateTime.Now; // Token süresini hemen dolmuş olarak ayarla gerek olmayabiilir
+
+            await c.SaveChangesAsync();
+
+            // Başarılı bir şekilde hesap aktifleşti
+            return Json(new { success = true, message = "Hesabınız başarıyla aktif hale getirildi!" });
+        }
+
+
+
+        [HttpGet]
 		public IActionResult SignIn()
 		{
 			return View();
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> SignIn(Customer x)
-		{
-			var information = await c.Customers
-				.FirstOrDefaultAsync(c => c.CustomerEmail == x.CustomerEmail && c.CustomerPassword == x.CustomerPassword);
+        [HttpPost]
+        public async Task<IActionResult> SignIn(Customer x)
+        {
+            // Müşteri bilgilerini email ve şifre ile arıyoruz
+            var information = await c.Customers
+                .FirstOrDefaultAsync(c => c.CustomerEmail == x.CustomerEmail && c.CustomerPassword == x.CustomerPassword);
 
-			if (information != null)
-			{
-				await SignInUser(information.CustomerID.ToString(), information.CustomerEmail, "Customer");
-				return RedirectToAction("Products", "Home");
-			}
+            // Kullanıcı bulunduysa
+            if (information != null)
+            {
+                // Eğer kullanıcı aktifse, giriş işlemini yap
+                if (information.IsActive)
+                {
+                    await SignInUser(information.CustomerID.ToString(), information.CustomerEmail, "Customer");
+                    return RedirectToAction("Products", "Home");
+                }
+                else
+                {
+                    // Eğer kullanıcı aktif değilse, hata mesajı
+                    TempData["ErrorMessage"] = "Hesabınız aktif değil. Lütfen doğrulama işlemini tamamlayın.";
+                    return RedirectToAction("Login");
+                }
+            }
 
-			// Hatalı giriş durumunda bir mesaj ayarla
-			TempData["ErrorMessage"] = "Gecersiz email veya sifre.";
-			return RedirectToAction("Login");
-		}
+            // Eğer kullanıcı bulunamazsa, hata mesajı
+            TempData["ErrorMessage"] = "Geçersiz email veya şifre.";
+            return RedirectToAction("Login");
+        }
 
 
-		[HttpGet]
+        [HttpGet]
 		public IActionResult SellerLogin()
 		{
 			return View();
@@ -91,7 +182,7 @@ namespace Virtual_Shopping.Controllers
 
 			if (information != null)
 			{
-				c.Notifications.Add(new Notification
+                c.Notifications.Add(new Notification
 				{
 					NotificationMessage = "Admin " + information.AdminEmail + " sisteme giris yapti.",
 					CreateTime = DateTime.Now,
@@ -104,7 +195,7 @@ namespace Virtual_Shopping.Controllers
 			}
 			else
 			{
-				c.Notifications.Add(new Notification
+                c.Notifications.Add(new Notification
 				{
 					NotificationMessage = "Admin " + x.AdminEmail + " sisteme giris yapamadı",
 					CreateTime = DateTime.Now,

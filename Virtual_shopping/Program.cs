@@ -26,7 +26,12 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOnly", policy => policy.RequireClaim("UserType", "Admin"));
 });
 
-
+builder.Services.AddScoped<EmailService>(sp => new EmailService(
+    smtpHost: builder.Configuration["EmailSettings:SmtpHost"],
+    smtpPort: int.Parse(builder.Configuration["EmailSettings:SmtpPort"]),
+    emailFrom: builder.Configuration["EmailSettings:EmailFrom"],
+    emailPassword: builder.Configuration["EmailSettings:EmailPassword"]
+));
 var app = builder.Build();
 
 app.UseHttpsRedirection();

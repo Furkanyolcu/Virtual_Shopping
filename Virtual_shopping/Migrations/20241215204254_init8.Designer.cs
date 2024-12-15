@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Virtual_Shopping.Models;
 
@@ -11,9 +12,11 @@ using Virtual_Shopping.Models;
 namespace Virtual_Shopping.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20241215204254_init8")]
+    partial class init8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,38 +193,6 @@ namespace Virtual_Shopping.Migrations
                     b.ToTable("Sellers");
                 });
 
-            modelBuilder.Entity("Virtual_Shopping.Models.Token", b =>
-                {
-                    b.Property<int>("TokenID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TokenID"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CustomerID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("TokenID");
-
-                    b.HasIndex("CustomerID")
-                        .IsUnique();
-
-                    b.ToTable("Tokens");
-                });
-
             modelBuilder.Entity("ProductsSeller", b =>
                 {
                     b.HasOne("Virtual_Shopping.Models.Products", null)
@@ -234,23 +205,6 @@ namespace Virtual_Shopping.Migrations
                         .WithMany()
                         .HasForeignKey("SellersSellerID")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Virtual_Shopping.Models.Token", b =>
-                {
-                    b.HasOne("Virtual_Shopping.Models.Customer", "Customer")
-                        .WithOne("Token")
-                        .HasForeignKey("Virtual_Shopping.Models.Token", "CustomerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("Virtual_Shopping.Models.Customer", b =>
-                {
-                    b.Navigation("Token")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

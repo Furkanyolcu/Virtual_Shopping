@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Activate Account";
+}
+
+<div id="activationMessage"></div>
+
+<script>
+    // Token'ı URL'den al (path veya query string içinde olabilir)
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+
+    // Token kontrolü için AJAX isteği gönder
+    if (token) {
+        fetch('/Login/ActivateAccount', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(token) // Token'ı POST body olarak gönder
+        })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById("activationMessage");
+                if (data.success) {
+                    messageDiv.innerHTML = `<div style="color: green;">${data.message}</div>`;
+                } else {
+                    messageDiv.innerHTML = `<div style="color: red;">${data.message}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Hata:', error);
+                document.getElementById("activationMessage").innerHTML =
+                    `<div style="color: red;">Bir hata oluştu. Lütfen tekrar deneyin.</div>`;
+            });
+    } else {
+        document.getElementById("activationMessage").innerHTML =
+            `<div style="color: red;">Token bulunamadı. Aktivasyon başarısız.</div>`;
+    }
+</script>
