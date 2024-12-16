@@ -16,8 +16,7 @@ namespace Virtual_Shopping.Controllers
 
 		public IActionResult Panel()
 		{
-			var notifications = _context.Notifications.ToList();
-			return View(notifications);
+			return View();
 		}
 
 		/* PROFİL İŞLEMLERİ */
@@ -116,6 +115,42 @@ namespace Virtual_Shopping.Controllers
 			}
 			return RedirectToAction("Notification");
 		}
+
+		[HttpGet]
+		public IActionResult Logs(int page = 1)
+		{
+			int pageSize = 10; // Her sayfada kaç log gösterileceği
+			int totalLogs = _context.Logs.Count(); // Toplam log sayısı
+			int totalPages = (int)Math.Ceiling((totalLogs - pageSize) / (double)pageSize);
+
+			// Son 50 logu getir
+			var recentLogs = _context.Logs
+				.OrderByDescending(l => l.LogDate)
+				.Take(pageSize)
+				.ToList();
+
+			List<Logs> logsToShow;
+			if (page == 1)
+			{
+				// İlk sayfa son 50 logu gösterir
+				logsToShow = recentLogs;
+			}
+			else
+			{
+				// Diğer sayfalar, 50’den sonrası için sayfalama yapar
+				logsToShow = _context.Logs
+					.OrderByDescending(l => l.LogDate)
+					.Skip(pageSize + (page - 2) * pageSize)
+					.Take(pageSize)
+					.ToList();
+			}
+
+			ViewBag.CurrentPage = page;
+			ViewBag.TotalPages = totalPages;
+
+			return View(logsToShow);
+		}
+
 
 
 

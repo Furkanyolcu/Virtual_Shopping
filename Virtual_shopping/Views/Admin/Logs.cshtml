@@ -1,0 +1,96 @@
+﻿@using Virtual_Shopping.Models
+@model List<Logs>
+@{
+	ViewData["Title"] = "Logs";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="main-panel">
+	<div class="content-wrapper">
+		<div class="page-header">
+			<h3 class="page-title">
+				<span class="page-title-icon bg-gradient-primary text-white mr-2">
+					<i class="mdi mdi-home"></i>
+				</span> Loglar
+			</h3>
+			<nav aria-label="breadcrumb">
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item active" aria-current="page">
+						<span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<div class="col-md-16 grid-margin stretch-card">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="card-title">Bildirimler</h4>
+					<div class="search-field d-none d-md-block">
+					</div>
+					<br />
+					<br />
+					<div class="table-responsive">
+						<table class="table">
+							<thead>
+								<tr>
+									<th> Açıklama </th>
+									<th> Oluşturulma Tarihi </th>
+								</tr>
+							</thead>
+							<tbody>
+								@if (Model != null && Model.Count > 0)
+								{
+									@foreach (var item in Model)
+									{
+										<tr>
+											<td>@item.Activity</td>
+											<td>@item.LogDate</td>
+											<td>
+												<form method="post" action="/Log/DeleteLog/@item.LogID">
+													<input class="btn btn-primary btn-lg" type="submit" value="Log Kaydını Sil">
+												</form>
+											</td>
+										</tr>
+									}
+								}
+								else
+								{
+									<tr>
+										<td colspan="3">No Log found.</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+
+					<!-- Pagination -->
+					<nav aria-label="Page navigation">
+						<ul class="pagination">
+							@if (ViewBag.CurrentPage > 1)
+							{
+								<li class="page-item">
+									<a class="page-link" href="/Admin/Logs?page=@(ViewBag.CurrentPage - 1)">Önceki</a>
+								</li>
+							}
+
+							@for (int i = 1; i <= ViewBag.TotalPages; i++)
+							{
+								<li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+									<a class="page-link" href="/Admin/Logs?page=@i">@i</a>
+								</li>
+							}
+
+							@if (ViewBag.CurrentPage < ViewBag.TotalPages)
+							{
+								<li class="page-item">
+									<a class="page-link" href="/Admin/Logs?page=@(ViewBag.CurrentPage + 1)">Sonraki</a>
+								</li>
+							}
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- content-wrapper ends -->
+</div>
