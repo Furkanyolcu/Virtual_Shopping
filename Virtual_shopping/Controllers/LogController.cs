@@ -85,7 +85,7 @@ namespace Virtual_Shopping.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult DeleteNotification(int id)
+		public async Task DeleteLog(int id)
 		{
 			var log = c.Logs.Find(id);
 			if (log != null)
@@ -93,7 +93,6 @@ namespace Virtual_Shopping.Controllers
 				c.Logs.Remove(log);
 				c.SaveChanges();
 			}
-			return RedirectToAction("Logs");
 		}
 	}
 }
