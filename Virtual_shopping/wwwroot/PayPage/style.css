@@ -116,3 +116,10 @@ input, textarea {
     .submit-btn:hover {
         background-color: #45a049;
     }
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+}

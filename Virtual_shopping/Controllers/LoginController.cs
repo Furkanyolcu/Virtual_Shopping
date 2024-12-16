@@ -7,84 +7,40 @@ using Virtual_Shopping.Models;
 
 namespace Virtual_Shopping.Controllers
 {
-	public class LoginController : Controller
-	{
+    public class LoginController : Controller
+    {
 
-		Context c = new Context();
-		LogController log = new LogController();
+        Context c = new Context();
+        private readonly EmailService _emailService;
 
-		private readonly EmailService _emailService;
+        public LoginController(EmailService emailService)
+        {
+            _emailService = emailService;
+        }
+        public IActionResult Login()
+        {
+            return View();
+        }
 
-		public LoginController(EmailService emailService)
-		{
-			_emailService = emailService;
-		}
-		public IActionResult Login()
+        [HttpGet]
+        public IActionResult SignUp()
+        {
+            return View();
 
-		{
-			return View();
-		}
-
-		[HttpGet]
-		public IActionResult SignUp()
-		{
-			return View();
-
-		}
-		[HttpGet]
-		public IActionResult ActivateAccount()
-		{
-			return View();
-		}
-		[HttpPost]
-		public async Task<IActionResult> SignUp(Customer d)
-		{
-			var customer= await c.Customers.FirstOrDefaultAsync(x => x.CustomerEmail == d.CustomerEmail);
-			if (customer != null)
-			{
-				//ModelState.AddModelError("CustomerEmail", "Bu e-posta adresi zaten kullanılıyor.");
-				if (customer.IsActive)
-				{
-					TempData["ErrorMessage"] = "Bu mail zaten kayıtlı";
-					return RedirectToAction("Login", "Login");
-				}
-				else
-				{
-					TempData["ErrorMessage"] = "Bu mail aktif değil, oany maili tekrardan gönderildi";
-				}
-				
-			}
-
-			// Kullanıcıyı pasif olarak kaydet
-			d.IsActive = false;
-
-			// Token oluştur
-			var token = new Token
-			{
-				Value = Guid.NewGuid().ToString(),
-				ExpirationDate = DateTime.Now.AddMinutes(15), // 15 dakika
-				IsActive = true, // Token geçerli
-				Customer = d // Token, bu kullanıcıya atanacak
-			};
-
-			c.Customers.Add(d);
-			c.Tokens.Add(token);
-			await c.SaveChangesAsync();
-
-			// Doğrulama URL'si oluştur
-			var verificationUrl = Url.Action("ActivateAccount", "Login", new { token = token.Value }, Request.Scheme);
-
-			// E-posta gönder (Token sadece metin olarak gönderilecek)
-			await _emailService.SendEmailAsync(
-				d.CustomerEmail,
-				"E-posta Doğrulama",
-				$"Merhaba {d.CustomerName}, lütfen hesabınızı doğrulamak için aşağıdaki bağlantıya tıklayın veya URL'yi tarayıcınıza yapıştırın: {verificationUrl}"
-			);
-
-			// Kullanıcıyı Login sayfasına yönlendir
-			return RedirectToAction("Login", "Login");
-
-         }
+        }
+        [HttpGet]
+        public IActionResult ActivateAccount()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SignUp(Customer d)
+        {
+            if (await c.Customers.AnyAsync(x => x.CustomerEmail == d.CustomerEmail))
+            {
+                ModelState.AddModelError("CustomerEmail", "Bu e-posta adresi zaten kullanılıyor.");
+                return RedirectToAction("Login", "Login");
+            }
 
             // Kullanıcıyı pasif olarak kaydet
             d.IsActive = false;
@@ -105,32 +61,34 @@ namespace Virtual_Shopping.Controllers
             // Doğrulama URL'si oluştur
             var verificationUrl = Url.Action("ActivateAccount", "Login", new { token = token.Value }, Request.Scheme);
 
-            // E-posta gönder (Token sadece metin olarak gönderilecek)
+            // E-posta gönder
             await _emailService.SendEmailAsync(
-    d.CustomerEmail,
-    "E-posta Doğrulama",
-    $@"Merhaba {d.CustomerName},
+                d.CustomerEmail,
+                "E-posta Doğrulama",
+                $@"Merhaba {d.CustomerName},
 
-Hesabınızı etkinleştirmek için aşağıdaki bağlantıyı kullanabilirsiniz. Bu bağlantı sizi hesap doğrulama sayfasına yönlendirecektir:
+        Hesabınızı etkinleştirmek için aşağıdaki bağlantıyı kullanabilirsiniz. Bu bağlantı sizi hesap doğrulama sayfasına yönlendirecektir:
 
-{verificationUrl}
+        {verificationUrl}
 
-Eğer bağlantıya tıklayamıyorsanız, lütfen yukarıdaki URL'yi tarayıcınıza kopyalayıp yapıştırın.
+        Eğer bağlantıya tıklayamıyorsanız, lütfen yukarıdaki URL'yi tarayıcınıza kopyalayıp yapıştırın.
 
-Teşekkür ederiz,
-Destek Ekibiniz"
-);
+        Teşekkür ederiz,
+        Destek Ekibiniz"
+            );
 
-            // Kullanıcıyı Login sayfasına yönlendir
+            // Kullanıcıya bilgi mesajı ile Login sayfasına yönlendir
+            TempData["SuccessMessage"] = "Kaydiniz olusturuldu. Lutfen hesabinizi aktif hale getirmek icin e-postanizi kontrol edin.";
             return RedirectToAction("Login", "Login");
         }
+
 
         [HttpPost]
         public async Task<IActionResult> ActivateAccount([FromBody] string token)
         {
             if (string.IsNullOrWhiteSpace(token))
             {
-                return Json(new { success = false, message = "Geçersiz istek: Token boş olamaz." });
+                return Json(new { success = false, message = "Gecersiz istek: Token bos olamaz." });
             }
 
             // Token'ı ve ilişkili kullanıcıyı bul
@@ -140,7 +98,7 @@ Destek Ekibiniz"
             // Token bulunamazsa veya geçersizse
             if (userToken == null)
             {
-                return Json(new { success = false});
+                return Json(new { success = false });
             }
 
             //// Kullanıcı zaten aktifse
@@ -157,106 +115,126 @@ Destek Ekibiniz"
             await c.SaveChangesAsync();
 
             // Başarılı bir şekilde hesap aktifleşti
-            return Json(new { success = true, message = "Hesabınız başarıyla aktif hale getirildi!" });
+            return Json(new { success = true, message = "Hesabınız basarıyla aktif hale getirildi!" });
         }
 
 
 
         [HttpGet]
-		public IActionResult SignIn()
-		{
-			return View();
-		}
+        public IActionResult SignIn()
+        {
+            return View();
+        }
 
-		[HttpPost]
-		public async Task<IActionResult> SignIn(Customer x)
-		{
-			var information = await c.Customers
-				.FirstOrDefaultAsync(c => c.CustomerEmail == x.CustomerEmail && c.CustomerPassword == x.CustomerPassword);
+        [HttpPost]
+        public async Task<IActionResult> SignIn(Customer x)
+        {
+            // Müşteri bilgilerini email ve şifre ile arıyoruz
+            var information = await c.Customers
+                .FirstOrDefaultAsync(c => c.CustomerEmail == x.CustomerEmail && c.CustomerPassword == x.CustomerPassword);
 
-			if (information != null)
-			{
-				if (information.IsActive)
-				{
-					await SignInUser(information.CustomerID.ToString(), information.CustomerEmail, "Customer");
-					await log.LoginLog(x.CustomerEmail, "Customer", true);
-					return RedirectToAction("Products", "Home");
-				}
-				else
-				{
-					TempData["ErrorMessage"] = "Hesabınız aktif değil. Lütfen doğrulama işlemini tamamlayın.";
-					await log.LoginLog(x.CustomerEmail, "Seller", false);
-					return RedirectToAction("Login");
-				}
-			}
-			await log.LoginLog(x.CustomerEmail, "Customer", false);
-			TempData["ErrorMessage"] = "Geçersiz email veya şifre.";
-			return RedirectToAction("Login");
-		}
+            // Kullanıcı bulunduysa
+            if (information != null)
+            {
+                // Eğer kullanıcı aktifse, giriş işlemini yap
+                if (information.IsActive)
+                {
+                    await SignInUser(information.CustomerID.ToString(), information.CustomerEmail, "Customer");
+                    return RedirectToAction("Products", "Home");
+                }
+                else
+                {
+                    // Eğer kullanıcı aktif değilse, hata mesajı
+                    TempData["ErrorMessage"] = "Hesabınız aktif degil. Lütfen dogrulama islemini tamamlayın.";
+                    return RedirectToAction("Login");
+                }
+            }
+
+            // Eğer kullanıcı bulunamazsa, hata mesajı
+            TempData["ErrorMessage"] = "Gecersiz email veya sifre.";
+            return RedirectToAction("Login");
+        }
 
 
-		[HttpGet]
-		public IActionResult SellerLogin()
-		{
-			return View();
-		}
-		[HttpPost]
-		public async Task<IActionResult> SellerLogin(Seller x)
-		{
-			var information = await c.Sellers
-				.FirstOrDefaultAsync(c => c.SellerEmail == x.SellerEmail && c.SellerPassword == x.SellerPassword);
+        [HttpGet]
+        public IActionResult SellerLogin()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SellerLogin(Seller x)
+        {
+            var information = await c.Sellers
+                .FirstOrDefaultAsync(c => c.SellerEmail == x.SellerEmail && c.SellerPassword == x.SellerPassword);
 
-			if (information != null)
-			{
-				await SignInUser(information.SellerID.ToString(), information.SellerEmail, "Seller");
-				await log.LoginLog(x.SellerEmail, "Seller", true);
-				return RedirectToAction("SellerPage", "Seller");
-			}
-			await log.LoginLog(x.SellerEmail, "Seller", false);
-			TempData["ErrorMessage"] = "Gecersiz email veya sifre.";
-			return RedirectToAction("SellerLogin", "Login");
-		}
+            if (information != null)
+            {
+                await SignInUser(information.SellerID.ToString(), information.SellerEmail, "Seller");
+                return RedirectToAction("SellerPage", "Seller");
+            }
 
-		[HttpGet]
-		public IActionResult Admin()
-		{
-			return View();
-		}
+            // Return to the login page if authentication fails
+            TempData["ErrorMessage"] = "Gecersiz email veya sifre.";
+            return RedirectToAction("SellerLogin", "Login");
+        }
 
-		[HttpPost]
-		public async Task<IActionResult> Admin(Admin x)
-		{
-			var information = await c.Admins
-				.FirstOrDefaultAsync(c => c.AdminEmail == x.AdminEmail && c.AdminPassword == x.AdminPassword);
+        [HttpGet]
+        public IActionResult Admin()
+        {
+            return View();
+        }
 
-			if (information != null)
-			{
-				await SignInUser(information.AdminID.ToString(), information.AdminEmail, "Admin");
-				await log.LoginLog(x.AdminEmail, "Admin", true);
-				return RedirectToAction("Panel", "Admin");
-			}
-			await log.LoginLog(x.AdminEmail, "Admin", false);
-			TempData["ErrorMessage"] = "Gecersiz email veya sifre.";
-			return RedirectToAction("Admin", "Login");
-		}
+        [HttpPost]
+        public async Task<IActionResult> Admin(Admin x)
+        {
+            var information = await c.Admins
+                .FirstOrDefaultAsync(c => c.AdminEmail == x.AdminEmail && c.AdminPassword == x.AdminPassword);
 
-		private async Task SignInUser(string userId, string email, string role)
-		{
-			var claims = new List<Claim>
-			{
-				new Claim(ClaimTypes.NameIdentifier, userId),
-				new Claim(ClaimTypes.Email, email),
-				new Claim("UserType", role)
-			};
+            if (information != null)
+            {
+                c.Notifications.Add(new Notification
+                {
+                    NotificationMessage = "Admin " + information.AdminEmail + " sisteme giris yapti.",
+                    CreateTime = DateTime.Now,
+                    IsRead = false
+                });
+                await c.SaveChangesAsync();
+                await SignInUser(information.AdminID.ToString(), information.AdminEmail, "Admin");
 
-			var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-			var authProperties = new AuthenticationProperties
-			{
-				IsPersistent = true
-			};
+                return RedirectToAction("Panel", "Admin");
+            }
+            else
+            {
+                c.Notifications.Add(new Notification
+                {
+                    NotificationMessage = "Admin " + x.AdminEmail + " sisteme giris yapamadı",
+                    CreateTime = DateTime.Now,
+                    IsRead = false
+                });
+                await c.SaveChangesAsync();
+            }
 
-			await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-		}
+            TempData["ErrorMessage"] = "Gecersiz email veya sifre.";
+            return RedirectToAction("Admin", "Login");
+        }
 
-	}
+        private async Task SignInUser(string userId, string email, string role)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId),
+                new Claim(ClaimTypes.Email, email),
+                new Claim("UserType", role)
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true // Make the session persistent
+            };
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+        }
+
+    }
 }

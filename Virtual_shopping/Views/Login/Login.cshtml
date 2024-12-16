@@ -61,13 +61,20 @@
 
     <script src="~/Login_Form/main.js"></script>
     <script>
-        // Kullanıcı giriş hatası olup olmadığını kontrol et
         window.onload = function () {
-            var errorMessage = '@TempData["ErrorMessage"]'; // Controller'dan gelen hata mesajı
+            // Başarı mesajı
+            var successMessage = '@TempData["SuccessMessage"]';
+            if (successMessage) {
+                alert(successMessage); // Başarı mesajını göster
+            }
+
+            // Hata mesajı
+            var errorMessage = '@TempData["ErrorMessage"]';
             if (errorMessage) {
                 alert(errorMessage); // Hata mesajını göster
             }
         }
     </script>
+
 </body>
 </html>

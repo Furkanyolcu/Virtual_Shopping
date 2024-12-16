@@ -37,7 +37,7 @@
     });
 
     cardCvvInput.addEventListener('focus', function () {
-        cardContainer.style.transform = 'rotateY(180deg)';
+        cardContainer.style.transform = 'rotateY(360deg)';
     });
 
     cardCvvInput.addEventListener('blur', function () {
