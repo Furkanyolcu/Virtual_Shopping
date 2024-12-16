@@ -83,46 +83,86 @@ namespace Virtual_Shopping.Controllers
 
 			// Kullanıcıyı Login sayfasına yönlendir
 			return RedirectToAction("Login", "Login");
-		}
 
-		[HttpPost]
-		public async Task<IActionResult> ActivateAccount([FromBody] string token)
-		{
-			if (string.IsNullOrWhiteSpace(token))
-			{
-				return Json(new { success = false, message = "Geçersiz istek: Token boş olamaz." });
-			}
+         }
 
-			// Token'ı ve ilişkili kullanıcıyı bul
-			var userToken = await c.Tokens.Include(t => t.Customer)
-										  .FirstOrDefaultAsync(t => t.Value == token && t.IsActive);
+            // Kullanıcıyı pasif olarak kaydet
+            d.IsActive = false;
 
-			// Token bulunamazsa veya geçersizse
-			if (userToken == null)
-			{
-				return Json(new { success = false, message = "Token geçersiz veya süresi dolmuş." });
-			}
+            // Token oluştur
+            var token = new Token
+            {
+                Value = Guid.NewGuid().ToString(),
+                ExpirationDate = DateTime.Now.AddMinutes(15), // 15 dakika
+                IsActive = true, // Token geçerli
+                Customer = d // Token, bu kullanıcıya atanacak
+            };
 
-			// Kullanıcı zaten aktifse
-			if (userToken.Customer.IsActive)
-			{
-				return Json(new { success = false, message = "Hesabınız zaten aktif durumda." });
-			}
+            c.Customers.Add(d);
+            c.Tokens.Add(token);
+            await c.SaveChangesAsync();
 
-			// Kullanıcıyı aktif hale getir ve token'ı geçersiz yap
-			userToken.Customer.IsActive = true;
-			userToken.IsActive = false;
-			userToken.ExpirationDate = DateTime.Now; // Token süresini hemen dolmuş olarak ayarla gerek olmayabiilir
+            // Doğrulama URL'si oluştur
+            var verificationUrl = Url.Action("ActivateAccount", "Login", new { token = token.Value }, Request.Scheme);
 
-			await c.SaveChangesAsync();
+            // E-posta gönder (Token sadece metin olarak gönderilecek)
+            await _emailService.SendEmailAsync(
+    d.CustomerEmail,
+    "E-posta Doğrulama",
+    $@"Merhaba {d.CustomerName},
 
-			// Başarılı bir şekilde hesap aktifleşti
-			return Json(new { success = true, message = "Hesabınız başarıyla aktif hale getirildi!" });
-		}
+Hesabınızı etkinleştirmek için aşağıdaki bağlantıyı kullanabilirsiniz. Bu bağlantı sizi hesap doğrulama sayfasına yönlendirecektir:
+
+{verificationUrl}
+
+Eğer bağlantıya tıklayamıyorsanız, lütfen yukarıdaki URL'yi tarayıcınıza kopyalayıp yapıştırın.
+
+Teşekkür ederiz,
+Destek Ekibiniz"
+);
+
+            // Kullanıcıyı Login sayfasına yönlendir
+            return RedirectToAction("Login", "Login");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ActivateAccount([FromBody] string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return Json(new { success = false, message = "Geçersiz istek: Token boş olamaz." });
+            }
+
+            // Token'ı ve ilişkili kullanıcıyı bul
+            var userToken = await c.Tokens.Include(t => t.Customer)
+                                          .FirstOrDefaultAsync(t => t.Value == token && t.IsActive);
+
+            // Token bulunamazsa veya geçersizse
+            if (userToken == null)
+            {
+                return Json(new { success = false});
+            }
+
+            //// Kullanıcı zaten aktifse
+            //if (userToken.Customer.IsActive)
+            //{
+            //    return Json(new { success = false, message = "Hesabınız zaten aktif durumda." });
+            //}
+
+            // Kullanıcıyı aktif hale getir ve token'ı geçersiz yap
+            userToken.Customer.IsActive = true;
+            userToken.IsActive = false;
+            userToken.ExpirationDate = DateTime.Now; // Token süresini hemen dolmuş olarak ayarla gerek olmayabiilir
+
+            await c.SaveChangesAsync();
+
+            // Başarılı bir şekilde hesap aktifleşti
+            return Json(new { success = true, message = "Hesabınız başarıyla aktif hale getirildi!" });
+        }
 
 
 
-		[HttpGet]
+        [HttpGet]
 		public IActionResult SignIn()
 		{
 			return View();
