@@ -1,39 +1,41 @@
 ﻿@{
     ViewData["Title"] = "Activate Account";
+    Layout = null;
 }
 
-<div id="activationMessage"></div>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Hesap Aktivasyonu</title>
+<link href="~/emailservice/style.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div id="loadingMessage" class="message">
+            <p>Yükleniyor...</p>
+        </div>
+        <div id="successMessage" class="message hidden">
+            <svg class="icon success" viewBox="0 0 24 24">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <h1>Hesabınız Aktif Hale Getirildi!</h1>
+            <p>E-posta adresiniz başarıyla doğrulandı. Artık hesabınızı kullanmaya başlayabilirsiniz.</p>
+        </div>
+        <div id="errorMessage" class="message hidden">
+            <svg class="icon error" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+            <h1>Aktivasyon Başarısız</h1>
+            <p id="errorText"></p>
+        </div>
+        <a href="/" class="button">Ana Sayfaya Dön</a>
+    </div>
 
-<script>
-    // Token'ı URL'den al (path veya query string içinde olabilir)
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token");
-
-    // Token kontrolü için AJAX isteği gönder
-    if (token) {
-        fetch('/Login/ActivateAccount', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(token) // Token'ı POST body olarak gönder
-        })
-            .then(response => response.json())
-            .then(data => {
-                const messageDiv = document.getElementById("activationMessage");
-                if (data.success) {
-                    messageDiv.innerHTML = `<div style="color: green;">${data.message}</div>`;
-                } else {
-                    messageDiv.innerHTML = `<div style="color: red;">${data.message}</div>`;
-                }
-            })
-            .catch(error => {
-                console.error('Hata:', error);
-                document.getElementById("activationMessage").innerHTML =
-                    `<div style="color: red;">Bir hata oluştu. Lütfen tekrar deneyin.</div>`;
-            });
-    } else {
-        document.getElementById("activationMessage").innerHTML =
-            `<div style="color: red;">Token bulunamadı. Aktivasyon başarısız.</div>`;
-    }
-</script>
+    <script src="~/emailservice/main.js"></script>
+</body>
+</html>

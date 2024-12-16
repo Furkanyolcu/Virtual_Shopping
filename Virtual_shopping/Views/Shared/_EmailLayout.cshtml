@@ -1,0 +1,156 @@
+﻿@* @{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-posta Doğrulama</title>
+    
+</head>
+<body>
+    @RenderBody()
+    <div class="container">
+        <div id="loadingMessage" class="message">
+            <p>Yükleniyor...</p>
+        </div>
+        <div id="successMessage" class="message hidden">
+            <svg class="icon success" viewBox="0 0 24 24">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <h1>Hesabınız Aktif Hale Getirildi!</h1>
+            <p>E-posta adresiniz başarıyla doğrulandı. Artık hesabınızı kullanmaya başlayabilirsiniz.</p>
+        </div>
+        <div id="expiredMessage" class="message hidden">
+            <svg class="icon expired" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+            <h1>Tokenin Süresi Dolmuş</h1>
+            <p>Üzgünüz, e-posta doğrulama bağlantınızın süresi dolmuş. Lütfen yeni bir doğrulama e-postası talep edin.</p>
+        </div>
+        <a href="/" class="button">Ana Sayfaya Dön</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const loadingMessage = $('#loadingMessage');
+            const successMessage = $('#successMessage');
+            const expiredMessage = $('#expiredMessage');
+
+            // URL'den token'ı al
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (token) {
+                // Token doğrulama işlemi
+                $.ajax({
+                    url: '/Account/ActivateAccount',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(token),
+                    success: function (response) {
+                        loadingMessage.addClass('hidden');
+                        if (response.success) {
+                            successMessage.removeClass('hidden');
+                        } else {
+                            expiredMessage.removeClass('hidden');
+                            expiredMessage.find('p').text(response.message || 'Tokenin süresi dolmuş veya geçersiz.');
+                        }
+                    },
+                    error: function () {
+                        loadingMessage.addClass('hidden');
+                        expiredMessage.removeClass('hidden');
+                        expiredMessage.find('p').text('Bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+                    }
+                });
+            } else {
+                loadingMessage.addClass('hidden');
+                expiredMessage.removeClass('hidden');
+                expiredMessage.find('p').text('Geçersiz doğrulama bağlantısı.');
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff6b6b, #8b0000);
+        }
+
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .message {
+            margin-bottom: 1.5rem;
+        }
+
+        .icon {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+        }
+
+        .success {
+            stroke: #4CAF50;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .expired {
+            stroke: #FF5252;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .button {
+            display: inline-block;
+            background: linear-gradient(to right, #ff6b6b, #8b0000);
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+            .button:hover {
+                background: linear-gradient(to right, #ff5252, #7a0000);
+            }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</body>
+</html> *@

@@ -64,10 +64,19 @@ namespace Virtual_Shopping.Controllers
 
             // E-posta gönder (Token sadece metin olarak gönderilecek)
             await _emailService.SendEmailAsync(
-                d.CustomerEmail,
-                "E-posta Doğrulama",
-                $"Merhaba {d.CustomerName}, lütfen hesabınızı doğrulamak için aşağıdaki bağlantıya tıklayın veya URL'yi tarayıcınıza yapıştırın: {verificationUrl}"
-            );
+    d.CustomerEmail,
+    "E-posta Doğrulama",
+    $@"Merhaba {d.CustomerName},
+
+Hesabınızı etkinleştirmek için aşağıdaki bağlantıyı kullanabilirsiniz. Bu bağlantı sizi hesap doğrulama sayfasına yönlendirecektir:
+
+{verificationUrl}
+
+Eğer bağlantıya tıklayamıyorsanız, lütfen yukarıdaki URL'yi tarayıcınıza kopyalayıp yapıştırın.
+
+Teşekkür ederiz,
+Destek Ekibiniz"
+);
 
             // Kullanıcıyı Login sayfasına yönlendir
             return RedirectToAction("Login", "Login");
@@ -88,14 +97,14 @@ namespace Virtual_Shopping.Controllers
             // Token bulunamazsa veya geçersizse
             if (userToken == null)
             {
-                return Json(new { success = false, message = "Token geçersiz veya süresi dolmuş." });
+                return Json(new { success = false});
             }
 
-            // Kullanıcı zaten aktifse
-            if (userToken.Customer.IsActive)
-            {
-                return Json(new { success = false, message = "Hesabınız zaten aktif durumda." });
-            }
+            //// Kullanıcı zaten aktifse
+            //if (userToken.Customer.IsActive)
+            //{
+            //    return Json(new { success = false, message = "Hesabınız zaten aktif durumda." });
+            //}
 
             // Kullanıcıyı aktif hale getir ve token'ı geçersiz yap
             userToken.Customer.IsActive = true;
