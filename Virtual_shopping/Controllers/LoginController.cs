@@ -11,6 +11,7 @@ namespace Virtual_Shopping.Controllers
     {
 
         Context c = new Context();
+        LogController log = new LogController();
         private readonly EmailService _emailService;
 
         public LoginController(EmailService emailService)
@@ -39,6 +40,7 @@ namespace Virtual_Shopping.Controllers
             if (await c.Customers.AnyAsync(x => x.CustomerEmail == d.CustomerEmail))
             {
                 ModelState.AddModelError("CustomerEmail", "Bu e-posta adresi zaten kullanılıyor.");
+                TempData["ErrorMessage"] = "Bu e-posta adresi zaten kullaniliyor.";
                 return RedirectToAction("Login", "Login");
             }
 
@@ -79,7 +81,51 @@ namespace Virtual_Shopping.Controllers
 
             // Kullanıcıya bilgi mesajı ile Login sayfasına yönlendir
             TempData["SuccessMessage"] = "Kaydiniz olusturuldu. Lutfen hesabinizi aktif hale getirmek icin e-postanizi kontrol edin.";
+            await log.AddLog(d.CustomerEmail, "Kayıt", "Aktifleştirme linki gönderildi");
             return RedirectToAction("Login", "Login");
+
+        }
+        public async Task SignInActivation(Customer d)
+        {
+            // Token oluştur
+            var token = new Token
+            {
+                Value = Guid.NewGuid().ToString(),
+                ExpirationDate = DateTime.Now.AddMinutes(15), // 15 dakika
+                IsActive = true, // Token geçerli
+                Customer = d, // Token, bu kullanıcıya atanacak
+            };
+
+            if(await c.Tokens.AnyAsync(x => x.CustomerID == d.CustomerID))
+            {
+                var oldToken = await c.Tokens.FirstOrDefaultAsync(x => x.CustomerID == d.CustomerID);
+                c.Tokens.Remove(oldToken);
+            }
+            c.Tokens.Add(token);
+            await c.SaveChangesAsync();
+
+            // Doğrulama URL'si oluştur
+            var verificationUrl = Url.Action("ActivateAccount", "Login", new { token = token.Value }, Request.Scheme);
+
+            // E-posta gönder
+            await _emailService.SendEmailAsync(
+                d.CustomerEmail,
+                "E-posta Doğrulama",
+                $@"Merhaba {d.CustomerName},
+
+        Hesabınızı etkinleştirmek için aşağıdaki bağlantıyı kullanabilirsiniz. Bu bağlantı sizi hesap doğrulama sayfasına yönlendirecektir:
+
+        {verificationUrl}
+
+        Eğer bağlantıya tıklayamıyorsanız, lütfen yukarıdaki URL'yi tarayıcınıza kopyalayıp yapıştırın.
+
+        Teşekkür ederiz,
+        Destek Ekibiniz"
+            );
+
+            // Kullanıcıya bilgi mesajı ile Login sayfasına yönlendir
+            await log.AddLog(d.CustomerEmail, "Kayıt", "Aktifleştirme linki yeniden gönderildi");
+            TempData["SuccessMessage"] = "Kaydiniz olusturuldu. Lutfen hesabinizi aktif hale getirmek icin e-postanizi kontrol edin.";
         }
 
 
@@ -101,11 +147,6 @@ namespace Virtual_Shopping.Controllers
                 return Json(new { success = false });
             }
 
-            //// Kullanıcı zaten aktifse
-            //if (userToken.Customer.IsActive)
-            //{
-            //    return Json(new { success = false, message = "Hesabınız zaten aktif durumda." });
-            //}
 
             // Kullanıcıyı aktif hale getir ve token'ı geçersiz yap
             userToken.Customer.IsActive = true;
@@ -117,6 +158,9 @@ namespace Virtual_Shopping.Controllers
             // Başarılı bir şekilde hesap aktifleşti
             return Json(new { success = true, message = "Hesabınız basarıyla aktif hale getirildi!" });
         }
+        
+
+
 
 
 
@@ -140,16 +184,20 @@ namespace Virtual_Shopping.Controllers
                 if (information.IsActive)
                 {
                     await SignInUser(information.CustomerID.ToString(), information.CustomerEmail, "Customer");
+                    await log.LoginLog(x.CustomerEmail, "Seller", true);
                     return RedirectToAction("Products", "Home");
                 }
                 else
                 {
                     // Eğer kullanıcı aktif değilse, hata mesajı
                     TempData["ErrorMessage"] = "Hesabınız aktif degil. Lütfen dogrulama islemini tamamlayın.";
+                    await SignInActivation(information);
+                    await log.AddLog(x.CustomerEmail, "login", "Aktif olmayan hesaba giriş denemesi");
                     return RedirectToAction("Login");
                 }
             }
 
+            await log.LoginLog(x.CustomerEmail, "Seller", false);
             // Eğer kullanıcı bulunamazsa, hata mesajı
             TempData["ErrorMessage"] = "Gecersiz email veya sifre.";
             return RedirectToAction("Login");
@@ -170,9 +218,10 @@ namespace Virtual_Shopping.Controllers
             if (information != null)
             {
                 await SignInUser(information.SellerID.ToString(), information.SellerEmail, "Seller");
+                await log.LoginLog(x.SellerEmail, "Seller", true);
                 return RedirectToAction("SellerPage", "Seller");
             }
-
+            await log.LoginLog(x.SellerEmail, "Seller", false);
             // Return to the login page if authentication fails
             TempData["ErrorMessage"] = "Gecersiz email veya sifre.";
             return RedirectToAction("SellerLogin", "Login");
@@ -192,25 +241,13 @@ namespace Virtual_Shopping.Controllers
 
             if (information != null)
             {
-                c.Notifications.Add(new Notification
-                {
-                    NotificationMessage = "Admin " + information.AdminEmail + " sisteme giris yapti.",
-                    CreateTime = DateTime.Now,
-                    IsRead = false
-                });
-                await c.SaveChangesAsync();
                 await SignInUser(information.AdminID.ToString(), information.AdminEmail, "Admin");
-
+                await log.LoginLog(x.AdminEmail, "Admin", true);
                 return RedirectToAction("Panel", "Admin");
             }
             else
             {
-                c.Notifications.Add(new Notification
-                {
-                    NotificationMessage = "Admin " + x.AdminEmail + " sisteme giris yapamadı",
-                    CreateTime = DateTime.Now,
-                    IsRead = false
-                });
+                await log.LoginLog(x.AdminEmail, "Admin", false);
                 await c.SaveChangesAsync();
             }
 

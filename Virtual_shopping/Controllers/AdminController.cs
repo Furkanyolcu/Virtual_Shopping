@@ -119,11 +119,10 @@ namespace Virtual_Shopping.Controllers
 		[HttpGet]
 		public IActionResult Logs(int page = 1)
 		{
-			int pageSize = 10; // Her sayfada kaç log gösterileceği
-			int totalLogs = _context.Logs.Count(); // Toplam log sayısı
+			int pageSize = 10;
+			int totalLogs = _context.Logs.Count();
 			int totalPages = (int)Math.Ceiling((totalLogs - pageSize) / (double)pageSize);
 
-			// Son 50 logu getir
 			var recentLogs = _context.Logs
 				.OrderByDescending(l => l.LogDate)
 				.Take(pageSize)
@@ -132,12 +131,10 @@ namespace Virtual_Shopping.Controllers
 			List<Logs> logsToShow;
 			if (page == 1)
 			{
-				// İlk sayfa son 50 logu gösterir
 				logsToShow = recentLogs;
 			}
 			else
 			{
-				// Diğer sayfalar, 50’den sonrası için sayfalama yapar
 				logsToShow = _context.Logs
 					.OrderByDescending(l => l.LogDate)
 					.Skip(pageSize + (page - 2) * pageSize)

@@ -84,7 +84,18 @@ namespace Virtual_Shopping.Controllers
 			}
 		}
 
-		[HttpPost]
+		public async Task AddLog(string mail,string Category, string Activity)
+        {
+            c.Logs.Add(new Logs
+            {
+                LogCategory = Category,
+                Activity = Activity,
+                LogDate = DateTime.Now
+            });
+            await c.SaveChangesAsync();
+        }
+
+        [HttpPost]
 		public async Task DeleteLog(int id)
 		{
 			var log = c.Logs.Find(id);
