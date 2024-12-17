@@ -33,6 +33,7 @@
 						<table class="table">
 							<thead>
 								<tr>
+									<th>Kategori</th>
 									<th> Açıklama </th>
 									<th> Oluşturulma Tarihi </th>
 								</tr>
@@ -43,6 +44,7 @@
 									@foreach (var item in Model)
 									{
 										<tr>
+											<td>@item.LogCategory</td>
 											<td>@item.Activity</td>
 											<td>@item.LogDate</td>
 											<td>

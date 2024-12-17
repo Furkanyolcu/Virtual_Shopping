@@ -184,7 +184,7 @@ namespace Virtual_Shopping.Controllers
                 if (information.IsActive)
                 {
                     await SignInUser(information.CustomerID.ToString(), information.CustomerEmail, "Customer");
-                    await log.LoginLog(x.CustomerEmail, "Seller", true);
+                    await log.LoginLog(x.CustomerEmail, "Customer", true);
                     return RedirectToAction("Products", "Home");
                 }
                 else

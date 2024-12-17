@@ -7,31 +7,31 @@
     const cartItemCount = document.getElementById('cartItemCount');
     const addToCartButtons = document.querySelectorAll('.add-to-cart');
 
-    let cart = []; // Sepet verilerini tutan dizi
+    let cart = []; 
 
-    // Sepet paneli dışına tıklanınca kapanmasını sağlar
+    
     document.addEventListener('click', (e) => {
         if (!cartPanel.contains(e.target) && !cartButton.contains(e.target)) {
             cartPanel.classList.remove('open');
         }
     });
 
-    // Sepet paneli dışında bir yere tıklanırsa panelin kapanması engellenir
+   
     cartPanel.addEventListener('click', (e) => {
-        e.stopPropagation(); // Sepet paneline tıklanmasını engelle
+        e.stopPropagation(); 
     });
 
-    // Sepet panelini aç
+   
     cartButton.addEventListener('click', () => {
         cartPanel.classList.add('open');
     });
 
-    // Sepet panelini kapat
+    
     closeCart.addEventListener('click', () => {
         cartPanel.classList.remove('open');
     });
 
-    // Ürün ekleme butonları
+    
     addToCartButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
@@ -44,7 +44,6 @@
         });
     });
 
-    // Sepete ürün ekleme
     function addToCart(name, price) {
         const existingItem = cart.find(item => item.name === name);
         if (existingItem) {
@@ -54,20 +53,18 @@
         }
     }
 
-    // Sepetten ürün kaldırma
     function removeFromCart(name) {
         const existingItem = cart.find(item => item.name === name);
         if (existingItem) {
             existingItem.quantity--;
             if (existingItem.quantity <= 0) {
-                cart = cart.filter(item => item.name !== name); // Ürünü tamamen kaldır
+                cart = cart.filter(item => item.name !== name); 
             }
         }
     }
 
-    // Sepeti güncelleme
     function updateCartDisplay() {
-        cartItems.innerHTML = ''; // Sepet içeriğini sıfırla
+        cartItems.innerHTML = ''; 
         let total = 0;
 
         cart.forEach(item => {
@@ -83,10 +80,10 @@
             cartItems.appendChild(itemElement);
             total += item.price * item.quantity;
 
-            // Silme butonuna olay ekle
+            
             const removeButton = itemElement.querySelector('.remove-cart-btn');
             removeButton.addEventListener('click', (e) => {
-                e.stopPropagation(); // Silme butonunun paneli kapatmasını engelle
+                e.stopPropagation(); 
                 removeFromCart(item.name);
                 updateCartDisplay();
             });
@@ -106,29 +103,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let fav = [];
 
-    // Favoriler paneli dışına tıklanınca kapanmasını sağlar
+    
     document.addEventListener('click', (e) => {
         if (!favPanel.contains(e.target) && !favButton.contains(e.target)) {
             favPanel.classList.remove('open');
         }
     });
-
-    // Favoriler paneli dışında bir yere tıklanırsa panelin kapanması engellenir
     favPanel.addEventListener('click', (e) => {
-        e.stopPropagation(); // Favori paneline tıklanmasını engelle
+        e.stopPropagation(); 
     });
-
-    // Favoriler panelini aç
     favButton.addEventListener('click', () => {
         favPanel.classList.add('open');
     });
-
-    // Favoriler panelini kapat
     closeFav.addEventListener('click', () => {
         favPanel.classList.remove('open');
     });
-
-    // Ürünleri favorilere ekle
     addToFavButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
@@ -140,18 +129,14 @@ document.addEventListener('DOMContentLoaded', function () {
             updateFavDisplay();
         });
     });
-
-    // Favorilere ekleme fonksiyonu
     function addToFav(name, price) {
         const existingItem = fav.find(item => item.name === name);
         if (!existingItem) {
-            fav.push({ name }); // Favorilere yeni ürün ekle
+            fav.push({ name, price }); 
         }
     }
-
-    // Favoriler panelini güncelleme fonksiyonu
     function updateFavDisplay() {
-        favItems.innerHTML = ''; // Favoriler panelini temizle
+        favItems.innerHTML = ''; 
 
         fav.forEach((item, index) => {
             const itemElement = document.createElement('div');
@@ -162,21 +147,17 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
             favItems.appendChild(itemElement);
         });
-
-        // Çöp tenekesi butonlarına tıklama işlevi ekle
         const removeButtons = document.querySelectorAll('.remove-fav-btn');
         removeButtons.forEach(button => {
             button.addEventListener('click', (e) => {
-                e.stopPropagation(); // Favori butonunun tıklanmasını engelle, panelin kapanmasını önler
+                e.stopPropagation(); 
                 const itemIndex = parseInt(button.getAttribute('data-index'), 10);
-                removeFromFav(itemIndex); // Ürünü favorilerden kaldır
+                removeFromFav(itemIndex); 
             });
         });
     }
-
-    // Favorilerden ürün kaldırma fonksiyonu
     function removeFromFav(index) {
-        fav.splice(index, 1); // Belirtilen ürünü favoriler listesinden sil
-        updateFavDisplay();  // Favoriler panelini yeniden güncelle
+        fav.splice(index, 1); 
+        updateFavDisplay();  
     }
 });

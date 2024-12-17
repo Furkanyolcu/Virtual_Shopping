@@ -1,14 +1,10 @@
 ﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VirtualShopping</title>
-    <link href="~/ProductsPage/style.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
@@ -20,22 +16,25 @@
                 <li><a href="#">Hakkımızda</a></li>
                 <li><a href="#">İletişim</a></li>
             </ul>
-            <button id="favButton" class="fav-button">
-                <span class="fav-icon">Favoriler</span>
-            </button>
             <button id="cartButton" class="cart-button">
                 <span class="cart-icon">🛒</span>
                 <span id="cartItemCount">0</span>
             </button>
+            <button id="favButton" class="fav-button">
+                <span class="fav-icon">‪❤︎</span> Favorilerim
+            </button>
+            <div id="favPanel" class="fav-panel">
+                <h2>Favorilerim</h2>
+                <div id="favItems"></div>
+                <button id="closeFav" class="btn">Favorileri Kapat</button>
+            </div>
+
         </nav>
     </header>
     <div class="banner">
         <div class="banner-content">
             <h1>Yaz Koleksiyonu</h1>
             <p>En yeni ürünlerimizi keşfedin!</p>
-            <a href="/Maps/Maps" style="display: inline-block;padding: 10px 20px;color: white;text-decoration: none;border-radius: 5px;font-weight: bold;background-image: url('https://cdn-icons-png.flaticon.com/512/2875/2875433.png'); /* Flaticon resmi URL'si */background-repeat: no-repeat;background-position: 10px center;background-size: 20px 20px; padding-left: 40px; ">Bizi Haritada Gör</a>
-
-            </a>
         </div>
     </div>
 
@@ -43,33 +42,24 @@
         <div class="products">
             @foreach (var x in Model)
             {
-                <div class="product">
-                    <img src="@x.ProductImageURL" alt="@x.ProductName">
-                    <div class="product-info">
-                        <h3>@x.ProductName</h3>
-                        <p>@x.ProductDescription</p>
-                        <p class="price">@x.ProductPrice.ToString("C")</p>
-                        <a href="#" class="btn add-to-cart">Sepete Ekle</a>
-                        <a href="#" class="btn">❤️</a>
-                    </div>
+            <div class="product">
+                <img src="@x.ProductImageURL" alt="@x.ProductName">
+                <div class="product-info">
+                    <h3>@x.ProductName</h3>
+                    <p>@x.ProductDescription</p>
+                    <p class="price">@x.ProductPrice.ToString("C")</p>
+                    <a href="#" class="btn">Sepete Ekle</a>
                 </div>
+            </div>
             }
         </div>
     </div>
 
-    <div id="favPanel" class="fav-panel">
-        <h2>Favorilerim</h2>
-        <div id="favItems"></div>
-        <button id="closeFav" class="btn">Favorileri Kapat</button>
-    </div>
-      
     <div id="cartPanel" class="cart-panel">
         <h2>Sepetim</h2>
         <div id="cartItems"></div>
         <div id="cartTotal">Toplam: ₺0.00</div>
         <button id="closeCart" class="btn">Sepeti Kapat</button>
-        <br></br>
-        <a href="~/Cart/PayPage" >Ödemeye Git</a>
     </div>
 
     <section class="feedback">
@@ -87,6 +77,7 @@
     <footer>
         <p>&copy; 2023 VirtualShopping. Tüm hakları saklıdır.</p>
     </footer>
-    <script src="~/ProductsPage/main.js"></script>
+
+    <script src="script.js"></script>
 </body>
 </html>
