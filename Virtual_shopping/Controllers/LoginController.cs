@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Virtual_Shopping.Models;
+using System.Net.Mail;
 
 namespace Virtual_Shopping.Controllers
 {
@@ -64,10 +65,15 @@ namespace Virtual_Shopping.Controllers
 
             // E-posta gönder (Token sadece metin olarak gönderilecek)
             await _emailService.SendEmailAsync(
-                d.CustomerEmail,
-                "E-posta Doğrulama",
-                $"Merhaba {d.CustomerName}, lütfen hesabınızı doğrulamak için aşağıdaki bağlantıya tıklayın veya URL'yi tarayıcınıza yapıştırın: {verificationUrl}"
-            );
+      d.CustomerEmail,
+      "E-posta Doğrulama",
+      $"Merhaba {d.CustomerName},\n\n" +
+      "Hesabınızı doğrulamak için aşağıdaki bağlantıya tıklayın veya URL'yi tarayıcınıza yapıştırın:\n\n" +
+      $"{verificationUrl}\n\n" +
+      "Teşekkürler,\n" +
+      "Destek Ekibimiz"
+  );
+
 
             // Kullanıcıyı Login sayfasına yönlendir
             return RedirectToAction("Login", "Login");
